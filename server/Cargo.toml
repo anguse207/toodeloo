@@ -1,0 +1,12 @@
+[package]
+name = "toodeloo-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.41.1", features = ["full"] }
+toodeloo-core = { path = "../core" }
+uuid = { version = "1.11.0", features = ["v4", "v7", "fast-rng"] }
+sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio-native-tls"] }
+anyhow = "1.0.93"
+async-trait = "0.1.83"

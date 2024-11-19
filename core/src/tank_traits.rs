@@ -11,8 +11,8 @@ pub trait TaskTank {
     async fn get_user(&self, id: Uuid) -> Result<User>;
     async fn get_task(&self, task_id: Uuid) -> Result<Task>;
     
-    async fn get_users(&self, offset: usize, limit: usize) -> Result<Vec<User>>;
-    async fn get_tasks(&self, user_id: Uuid, offset: usize, limit: usize) -> Result<Vec<Task>>;
+    async fn get_users(&self) -> Result<Vec<User>>;
+    async fn get_tasks(&self, user_id: Uuid) -> Result<Vec<Task>>;
 
     async fn update_task(&self, task_id: Uuid, new_task: Task) -> Result<()>;
     async fn remove_task(&self, task_id: Uuid) -> Result<()>;

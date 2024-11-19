@@ -1,16 +1,18 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use sqlx::FromRow;
 use uuid::Uuid;
 
 // TODO: Use a more complex type for content
 type Content = String;
 
+#[derive(FromRow, Debug)]
 pub struct Task {
-    id: Uuid,
-    user_id: Uuid,
-    time: u64,
-    content: Content,
-    done: bool,
+    pub id: Uuid,
+    pub user_id: Uuid,
+    pub time: u64,
+    pub content: Content,
+    pub done: bool,
 }
 
 impl Task {
