@@ -4,7 +4,7 @@ use sqlx::FromRow;
 use uuid::Uuid;
 
 // TODO: Use a more complex type for content
-type Content = String;
+pub type Content = String;
 
 #[derive(FromRow, Debug)]
 pub struct Task {

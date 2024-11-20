@@ -1,12 +1,12 @@
 use uuid::Uuid;
 use anyhow::Result;
 
-use crate::{task::Task, user::User};
+use crate::{task::{Content, Task}, user::User};
 
 #[async_trait::async_trait]
 pub trait TaskTank {
     async fn new_user(&self, nick: String) -> Result<Uuid>;
-    async fn new_task(&self, user_id: Uuid, content: String) -> Result<Uuid>;
+    async fn new_task(&self, user_id: Uuid, content: Content) -> Result<Uuid>;
 
     async fn get_user(&self, id: Uuid) -> Result<User>;
     async fn get_task(&self, task_id: Uuid) -> Result<Task>;

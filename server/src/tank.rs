@@ -1,5 +1,5 @@
 
-use toodeloo_core::{tank_traits::TaskTank, task::Task, user::User};
+use toodeloo_core::{tank_traits::TaskTank, task::{Content, Task}, user::User};
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -22,7 +22,7 @@ impl TaskTank for Tank {
     async fn new_user(&self, nick: String) -> Result<Uuid> {
         todo!()
     }
-    async fn new_task(&self, user_id: Uuid, content: String) -> Result<Uuid> {
+    async fn new_task(&self, user_id: Uuid, content: Content) -> Result<Uuid> {
         todo!()
     }
     async fn get_user(&self, id: Uuid) -> Result<User> {
