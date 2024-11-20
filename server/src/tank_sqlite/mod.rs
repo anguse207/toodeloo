@@ -19,6 +19,7 @@ impl Tank {
         Self { pool }
     }
 
+    // Verify with `$ sqlite3 <db_name>.db` `sqlite> .tables`
     pub async fn create_tables(&self) -> Result<()> {
         sqlx::query(
             r#"
