@@ -1,7 +1,10 @@
-use uuid::Uuid;
 use anyhow::Result;
+use uuid::Uuid;
 
-use crate::{task::{Content, Task}, user::User};
+use crate::{
+    task::{Content, Task},
+    user::User,
+};
 
 #[async_trait::async_trait]
 pub trait TaskTank {
@@ -10,7 +13,7 @@ pub trait TaskTank {
 
     async fn get_user(&self, id: Uuid) -> Result<User>;
     async fn get_task(&self, task_id: Uuid) -> Result<Task>;
-    
+
     async fn get_users(&self) -> Result<Vec<User>>;
     async fn get_tasks(&self, user_id: Uuid) -> Result<Vec<Task>>;
 

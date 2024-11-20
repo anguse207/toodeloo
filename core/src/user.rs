@@ -1,8 +1,6 @@
 use sqlx::FromRow;
 use uuid::Uuid;
 
-use crate::task::Task;
-
 #[derive(FromRow, Debug)]
 pub struct User {
     pub id: Uuid,

@@ -10,7 +10,7 @@ pub type Content = String;
 pub struct Task {
     pub id: Uuid,
     pub user_id: Uuid,
-    pub time: u64,
+    pub origin_time: u64,
     pub content: Content,
     pub done: bool,
 }
@@ -20,7 +20,7 @@ impl Task {
         Self {
             id: Uuid::new_v4(),
             user_id,
-            time: get_timestamp(),
+            origin_time: get_timestamp(),
             content,
             done: false,
         }
