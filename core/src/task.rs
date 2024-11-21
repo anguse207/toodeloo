@@ -1,7 +1,7 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use sqlx::FromRow;
 use uuid::Uuid;
+
+use crate::timing::get_timestamp;
 
 // TODO: Use a more complex type for content
 pub type Content = String;
@@ -9,27 +9,24 @@ pub type Content = String;
 #[derive(FromRow, Debug)]
 pub struct Task {
     pub id: Uuid,
-    pub user_id: Uuid,
+    pub list_id: Uuid,
     pub origin_time: u64,
     pub content: Content,
     pub done: bool,
+    pub snoozed_until: Option<u64>,
+    pub deleted: bool,
 }
 
 impl Task {
-    pub fn new(user_id: Uuid, content: Content) -> Self {
+    pub fn new(list_id: Uuid, content: Content) -> Self {
         Self {
             id: Uuid::new_v4(),
-            user_id,
+            list_id,
             origin_time: get_timestamp(),
             content,
             done: false,
+            snoozed_until: None,
+            deleted: false,
         }
     }
-}
-
-fn get_timestamp() -> u64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
 }

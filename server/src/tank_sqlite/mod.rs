@@ -1,4 +1,6 @@
-mod traits_impl;
+mod list_impl;
+mod task_impl;
+mod user_impl;
 
 use anyhow::Result;
 use sqlx::SqlitePool;
@@ -8,6 +10,7 @@ pub struct Tank {
     pool: SqlitePool,
 }
 
+#[allow(unused)]
 impl Tank {
     pub async fn new(db: &str) -> Result<Self> {
         Ok(Self {
@@ -35,11 +38,13 @@ impl Tank {
         sqlx::query(
             r#"
             CREATE TABLE tasks (
-                id TEXT PRIMARY KEY,
-                user_id TEXT NOT NULL,
-                origin_time INTEGER NOT NULL,
-                content TEXT NOT NULL,
-                done BOOLEAN NOT NULL
+                id TEXT PRIMARY KEY, -- UUIDs stored as text
+                list_id TEXT NOT NULL, -- Foreign key to a list
+                user_id TEXT NOT NULL, -- Foreign key to a user
+                origin_time INTEGER NOT NULL, -- Unix timestamp (u64)
+                content TEXT NOT NULL, -- Assuming Content is stored as text
+                done BOOLEAN NOT NULL, -- Boolean indicating if the task is done
+                snoozed_until INTEGER -- Nullable, for optional snooze time
             )
             "#,
         )
