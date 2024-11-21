@@ -24,32 +24,55 @@ impl Tank {
 
     // Verify with `$ sqlite3 <db_name>.db` `sqlite> .tables`
     pub async fn create_tables(&self) -> Result<()> {
+        println!("Creating tables");
         sqlx::query(
             r#"
-            CREATE TABLE users (
+            CREATE TABLE Users (
                 id TEXT PRIMARY KEY,
-                nick TEXT NOT NULL
+                nick TEXT NOT NULL,
+                deleted_time INTEGER NOT NULL
             )
             "#,
         )
         .execute(&self.pool)
         .await?;
+        println!("Created Users Table");
 
         sqlx::query(
             r#"
-            CREATE TABLE tasks (
-                id TEXT PRIMARY KEY, -- UUIDs stored as text
-                list_id TEXT NOT NULL, -- Foreign key to a list
-                user_id TEXT NOT NULL, -- Foreign key to a user
-                origin_time INTEGER NOT NULL, -- Unix timestamp (u64)
-                content TEXT NOT NULL, -- Assuming Content is stored as text
-                done BOOLEAN NOT NULL, -- Boolean indicating if the task is done
-                snoozed_until INTEGER -- Nullable, for optional snooze time
+            CREATE TABLE Lists (
+                id TEXT PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                label TEXT NOT NULL,
+                deleted_time INTEGER NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES Users(id) 
             )
             "#,
         )
         .execute(&self.pool)
         .await?;
+        println!("Created Lists Table");
+
+        sqlx::query(
+            r#"
+            CREATE TABLE Tasks (
+                id TEXT PRIMARY KEY,
+                list_id TEXT NOT NULL,
+                user_id TEXT NOT NULL,
+                origin_time INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                done BOOLEAN NOT NULL,
+                snoozed_until INTEGER NOT NULL,
+                deleted_time INTEGER NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES Users(id),
+                FOREIGN KEY (list_id) REFERENCES Lists(id)
+
+            )
+            "#,
+        )
+        .execute(&self.pool)
+        .await?;
+        println!("Created Tasks Table");
 
         Ok(())
     }

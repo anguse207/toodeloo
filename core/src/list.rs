@@ -6,7 +6,7 @@ pub struct List {
     pub id: Uuid,
     pub user_id: Uuid,
     pub label: String,
-    pub deleted: bool,
+    pub deleted_time: u64,
 }
 
 impl List {
@@ -15,7 +15,7 @@ impl List {
             id: Uuid::new_v4(),
             user_id,
             label: label.into(),
-            deleted: false,
+            deleted_time: 0,
         }
     }
 }

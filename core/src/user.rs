@@ -5,7 +5,7 @@ use uuid::Uuid;
 pub struct User {
     pub id: Uuid,
     pub nick: String,
-    pub deleted: bool,
+    pub deleted_time: u64,
 }
 
 impl User {
@@ -13,7 +13,7 @@ impl User {
         Self {
             id: Uuid::new_v4(),
             nick: nick.into(),
-            deleted: false,
+            deleted_time: 0,
         }
     }
 }
