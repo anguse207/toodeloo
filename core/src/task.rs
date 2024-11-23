@@ -6,10 +6,10 @@ use crate::timing::get_timestamp;
 // TODO: Use a more complex type for content
 pub type Content = String;
 
-#[derive(FromRow, Debug)]
+#[derive(FromRow, Debug, PartialEq)]
 pub struct Task {
-    pub id: Uuid,
-    pub list_id: Uuid,
+    pub id: String,
+    pub list_id: String,
     pub origin_time: u64,
     pub content: Content,
     pub done: bool,
@@ -18,9 +18,9 @@ pub struct Task {
 }
 
 impl Task {
-    pub fn new(list_id: Uuid, content: Content) -> Self {
+    pub fn new(list_id: String, content: Content) -> Self {
         Self {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().to_string(),
             list_id,
             origin_time: get_timestamp(),
             content,

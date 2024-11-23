@@ -1,18 +1,20 @@
 use sqlx::FromRow;
 use uuid::Uuid;
 
-#[derive(FromRow, Debug)]
+use crate::tank_traits::ID;
+
+#[derive(FromRow, Debug, PartialEq)]
 pub struct List {
-    pub id: Uuid,
-    pub user_id: Uuid,
+    pub id: String,
+    pub user_id: String,
     pub label: String,
     pub deleted_time: u64,
 }
 
 impl List {
-    pub fn new(user_id: Uuid, label: &str) -> Self {
+    pub fn new(user_id: ID, label: &str) -> Self {
         Self {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().to_string(),
             user_id,
             label: label.into(),
             deleted_time: 0,

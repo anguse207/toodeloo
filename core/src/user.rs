@@ -1,9 +1,9 @@
 use sqlx::FromRow;
 use uuid::Uuid;
 
-#[derive(FromRow, Debug)]
+#[derive(FromRow, Debug, PartialEq)]
 pub struct User {
-    pub id: Uuid,
+    pub id: String,
     pub nick: String,
     pub deleted_time: u64,
 }
@@ -11,7 +11,7 @@ pub struct User {
 impl User {
     pub fn new(nick: &str) -> Self {
         Self {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().to_string(),
             nick: nick.into(),
             deleted_time: 0,
         }
