@@ -14,16 +14,14 @@ async fn main() -> Result<()> {
     let nick_id = tank.new_user("Nick".to_string()).await?;
     println!("Created user with ID: {}", nick_id);
 
-    let jerry_id = tank.new_user("Jerry".to_string()).await?;
-    println!("Created user with ID: {}", jerry_id);
+    // Get all users
+    println!("Users: {:?}", tank.get_users().await?);
+    
+    // Remove user
+    tank.remove_user(nick_id).await?;
 
     // Get all users
-    let users = tank.get_users().await?;
-    println!("Users: {:?}", users);
-
-    // Get a user
-    let nick = tank.get_user(nick_id).await?;
-    println!("Nick: {:?}", nick);
+    println!("Users: {:?}", tank.get_users().await?);
 
     Ok(())
 }

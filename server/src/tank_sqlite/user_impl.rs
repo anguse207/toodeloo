@@ -40,7 +40,7 @@ impl UserTank for Tank {
     }
 
     async fn get_users(&self) -> Result<Vec<User>> {
-        let users = query_as::<_, User>("SELECT * FROM users")
+        let users = query_as::<_, User>("SELECT * FROM users WHERE deleted_time = 0")
             .fetch_all(&self.pool)
             .await?;
 
@@ -60,11 +60,12 @@ impl UserTank for Tank {
 
     // This would only be used in batch, soft delete is done in `update_user()``
     async fn remove_user(&self, id: ID) -> Result<()> {
-        query("DELETE FROM users WHERE id = ?")
+        let rows = query("DELETE FROM users WHERE id = ?")
             .bind(id)
             .execute(&self.pool)
             .await?;
 
+        println!("{}", rows.rows_affected());
         Ok(())
     }
 }
