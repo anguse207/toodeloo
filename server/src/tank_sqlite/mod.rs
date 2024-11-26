@@ -36,7 +36,7 @@ impl Tank {
         )
         .execute(&self.pool)
         .await?;
-        println!("Created Users Table");
+        println!("  Created Users Table");
 
         sqlx::query(
             r#"
@@ -51,7 +51,7 @@ impl Tank {
         )
         .execute(&self.pool)
         .await?;
-        println!("Created Lists Table");
+        println!("  Created Lists Table");
 
         sqlx::query(
             r#"
@@ -72,7 +72,7 @@ impl Tank {
         )
         .execute(&self.pool)
         .await?;
-        println!("Created Tasks Table");
+        println!("  Created Tasks Table\n");
 
         Ok(())
     }

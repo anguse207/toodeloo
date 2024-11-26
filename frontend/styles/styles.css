@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+  }
+
+  .task-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .task-header {
+    background-color: #f7f7f7;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .task-title {
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+
+  .task-date {
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  .task-buttons {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    justify-content: center;
+  }
+
+  .task-buttons button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+  }
+
+  .task-buttons button:hover {
+    opacity: 0.9;
+  }
+
+  .task-buttons .toggle-completion {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .task-buttons .snooze {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  .task-buttons .remove {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .task-content {
+    padding: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+    color: #333;
+  }
