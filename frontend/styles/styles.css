@@ -1,3 +1,7 @@
+.ql-editor {
+  min-height: 200px;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -6,7 +10,7 @@ body {
 
   .task-container {
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
     margin: 0 auto;
     margin-bottom: 20px;
     border: 1px solid #ccc;
