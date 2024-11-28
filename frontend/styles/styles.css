@@ -81,10 +81,11 @@ body {
 
 #toolbar-anchor {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: auto; /* or set a fixed width if needed */
+  margin-bottom: 10em;
 }
 
 .toolbar {

@@ -12,7 +12,7 @@ const test_data = {
 };
 
 const taskHTML = (uuid) => `
-  <div class="task-container" id="task-container-${uuid}">
+  <div class="task-container fade-in" id="task-container-${uuid}">
     <div class="task-header">
     <div>
         <span class="task-title">Task Title</span>
@@ -46,7 +46,6 @@ const toolbarHTML = (uuid) => `
 </div>
 `;
 
-
 var toolbarAnchor = document.getElementById(`toolbar-anchor`);
 var toolbars = []
 
@@ -65,29 +64,17 @@ function renderTask(uuid) {
     },
   });
 
+  var toolbar = document.getElementById(`toolbar-${uuid}`);
+  toolbars.push(toolbar);
+
   var editor = document
     .getElementById(`task-content-${uuid}`)
     .getElementsByClassName("ql-editor")[0];
-
-  var toolbar = document.getElementById(`toolbar-${uuid}`);
-  toolbars.push(toolbar);
 
   editor.addEventListener("focus", () => {
     updateToolbarVisibility(toolbar);
   });
 }
-
-function updateToolbarVisibility(selected) {
-  toolbars.forEach(toolbar => {
-    if (toolbar.id === selected.id) {
-      // console.log(`Using: ${toolbar.id}`);
-      show(toolbar);
-    } else {
-      hide(toolbar); // Hide others
-    }
-  });
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
   renderTask(0);
@@ -112,6 +99,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // });
 });
 
+function updateToolbarVisibility(selected) {
+  toolbars.forEach(toolbar => {
+    if (toolbar.id === selected.id) {
+      // console.log(`Using: ${toolbar.id}`);
+      show(toolbar);
+      pulseContainer(toolbar);
+    } else {
+      hide(toolbar); // Hide others
+    }
+  });
+}
+
 function hide(toolbarContainer) {
   toolbarContainer.classList.add("hidden");
 }
@@ -119,4 +118,11 @@ function hide(toolbarContainer) {
 function show(toolbarContainer) {
   // hide all other toolbars
   toolbarContainer.classList.remove("hidden");
+}
+
+async function pulseContainer(element) {
+  element.classList.add("pulse-text");
+  setTimeout(() => {
+    element.classList.remove("pulse-text");
+  }, 400);
 }

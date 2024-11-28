@@ -1,12 +1,8 @@
 /* Define the pulse animation using keyframes */
 @keyframes pulse-text {
     0% {
-        transform: scale(1); /* Start at normal size */
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1); /* Slightly increase size */
-        opacity: 0.3; /* Slightly fade out */
+        transform: scale(0); /* Slightly increase size */
+        opacity: 0.7; /* Slightly fade out */
     }
     100% {
         transform: scale(1); /* Return to normal size */
@@ -16,7 +12,7 @@
 
 /* Apply the animation to elements with the .pulse class */
 .pulse-text {
-    animation: pulse-text 1s ease-in-out infinite; /* 1-second animation, repeating infinitely */
+    animation: pulse-text 0.4s ease-in-out infinite; /* 1-second animation, repeating infinitely */
 }
 
 /* Define the pulse animation using keyframes */
@@ -50,7 +46,7 @@
         box-shadow: 0 3px 20px rgba(0, 0, 0, 0.1); /* 0 2px 10px * 1.5 */
     }
     50% {
-            box-shadow: 0 1rem 2rem lightblue; /* 0 2px 10px * 1.5 */
+        box-shadow: 0 1rem 2rem lightblue; /* 0 2px 10px * 1.5 */
 
     }
     100% {
