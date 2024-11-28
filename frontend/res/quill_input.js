@@ -50,9 +50,10 @@ const toolbarHTML = (uuid) => `
 var toolbarAnchor = document.getElementById(`toolbar-anchor`);
 var toolbars = []
 
+const tasksContainer = document.getElementById(`tasks-container`);
 function renderTask(uuid) {
   // Insert the template
-  document.body.insertAdjacentHTML("beforeend", taskHTML(uuid));
+  tasksContainer.insertAdjacentHTML("beforeend", taskHTML(uuid));
   toolbarAnchor.insertAdjacentHTML("beforeend", toolbarHTML(uuid));
 
   // Initialize the Quill editor
