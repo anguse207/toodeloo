@@ -1,81 +1,160 @@
-const titleHTML = () => '<h1 id="title">m o n i🌱o r</h1>';
+const task_1 = {
+  id: "1",
+  list_id: "1",
+  origin_time: 1732901689,
+  title: "Shopping List",
+  content: {
+    ops: [
+      { insert: "Milk" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+      { insert: "Cheese" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+      { insert: "Chicken" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+    ],
+  }, // Assuming 'Content' is a nested object or structure; replace with an appropriate type or value.
+  done: false,
+  snoozed_until: 0,
+  deleted_time: 0,
+};
 
-const containerHTML = (uuid) => `
-    <div class="task-container fade-in" id="${uuid}">
-        <h2 class="label">Client Label</h2>
-        <p class="uuid">${uuid}</p>
+const task_2 = {
+  id: "2",
+  list_id: "1",
+  origin_time: 1730901689,
+  title: "Daily Jobs",
+  content: {
+    ops: [
+      { insert: "Take out bins" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+      { insert: "Feed dogs" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+      { insert: "Satanic ritual" },
+      { attributes: { list: "ordered" }, insert: "\n" },
+    ],
+  }, // Assuming 'Content' is a nested object or structure; replace with an appropriate type or value.
+  done: false,
+  snoozed_until: 0,
+  deleted_time: 0,
+};
 
-        <p class="label">Temperature °C</p>
-        <p class="value temp">${20}</p>
-
-        <p class="label">Flowing</p>
-        <p class="value flow"></p>
-
-        <p class="label">Latched Command</p>
-        <p class="value command-type"></p>
-        <p class="value command-time"></p>
-
-        <p class="label">Command Type</p>
-        <select class="dropdown">
-            <option value="Water">Water</option>
-            <option value="Reboot">Reboot</option>
-            <option value="CycleTime">Cycle Time</option>
-        </select>
-
-        <p class="label">Command Duration (S)</p>
-        <input class="input-box" type="number" placeholder="Command Duration (Seconds)">
-        
-        <button onclick="sendCommand('${uuid}')">Submit</button>
+const taskHTML = (id, title, date) => `
+  <div class="task-container fade-in" id="task-container-${id}">
+    <div class="task-header">
+    <div>
+        <span class="task-title" id="task-title-${id}">${title}</span>
+        <br />
+        <span class="task-date">${date}</span>
     </div>
+    <div class="task-buttons">
+        <button class="toggle-completion">C</button>
+        <button class="snooze">S</button>
+        <button class="remove">X</button>
+    </div>
+  </div>
+  <div id="task-content-${id}"></div>
 `;
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function getTemperature(uuid) {
-  return parseInt(
-    document.getElementById(uuid).querySelector(".temp").textContent,
-    10
+const tasksContainer = document.getElementById(`tasks-container`);
+function renderTask(task) {
+  // Insert the template
+  var date = new Date(task.origin_time * 1000).toISOString().split("T")[0];
+  tasksContainer.insertAdjacentHTML(
+    "beforeend",
+    taskHTML(task.id, task.title, date)
   );
-}
-async function updateTemperature(uuid, temperature) {
-  let container = document.getElementById(uuid);
-  let temp = container.querySelector(".temp");
 
-  if (getTemperature(uuid) != temperature) {
-    temp.textContent = temperature;
-    pulseText(temp);
-  }
+  // // Initialize the Quill editor
+  // var quill_title = new Quill(`#task-title-${task.id}`, {
+  //   theme: "bubble",
+  //   placeholder: "Name Your Baby", // TODO: Make this random, like 'Complete your masterpiece'...
+  // });
+
+  // Initialize the Quill editor
+  var quill_content = new Quill(`#task-content-${task.id}`, {
+    theme: "snow",
+    placeholder: "Dear Diary...", // TODO: Make this random, like 'Complete your masterpiece'...
+  });
+
+  quill_content.setContents(task.content);
+  var editor = document
+    .getElementById(`task-content-${task.id}`)
+    .getElementsByClassName("ql-editor")[0];
+
+  var taskContainer = document.getElementById(`task-container-${task.id}`);
+
+  var toolbar = taskContainer.getElementsByClassName("ql-toolbar")[0];
+  var in_toolbar = false;
+  hide(toolbar);
+
+  editor.addEventListener("focusout", () => {
+    setTimeout(() => { // Delay the hiding of the toolbar to allow the user to click on it
+      if (!in_toolbar) {
+        hide(toolbar);
+      }
+    },
+    0);
+  });
+
+  editor.addEventListener("focusin", () => {
+    show(toolbar);
+  });
+
+  // Stop the toolbar from hiding when it is focused
+  toolbar.addEventListener("focusin", () => {
+    in_toolbar = true;
+  });
+
+  toolbar.addEventListener("focusout", () => {
+    in_toolbar = false;
+  });
+
+  taskContainer.addEventListener("focusout", () => {
+    // TODO: Save the content to the backend
+    console.log(`Content Not Saved!\nID: :${task.id}\n${JSON.stringify(quill_content.getContents())}`);
+  });
+
+  // Add event listeners to the buttons...
+  var toggleCompletionButton = document
+    .getElementById(`task-container-${task.id}`)
+    .getElementsByClassName("toggle-completion")[0];
 }
 
-async function pulseText(element) {
+document.addEventListener("DOMContentLoaded", () => {
+  renderTask(task_1);
+  renderTask(task_2);
+
+  // document.body.insertAdjacentHTML("beforeend", taskHTML(0));
+
+  // // Loading Data
+  // quill.setContents(test_data);
+
+  // // Handle the "Show Output" button
+  // quill.on("text-change", () => {
+  //   // Get the formatted HTML content from the Quill editor
+  //   const htmlContent = quill.root.innerHTML;
+
+  //   // Display the raw HTML in the preformatted block
+  //   document.getElementById("html-output").textContent = htmlContent;
+
+  //   // Saving Data
+  //   const delta = quill.getContents();
+  //   document.getElementById("quill-delta").textContent = JSON.stringify(delta);
+  // });
+});
+
+function hide(toolbarContainer) {
+  toolbarContainer.classList.add("hidden");
+}
+
+function show(toolbarContainer) {
+  // hide all other toolbars
+  toolbarContainer.classList.remove("hidden");
+}
+
+async function pulseContainer(element) {
   element.classList.add("pulse-text");
   setTimeout(() => {
     element.classList.remove("pulse-text");
-  }, 2000);
+  }, 400);
 }
-
-async function init() {
-  const response = await fetch("server/data/get", {
-    method: "GET",
-  });
-  const clients = await response.json();
-
-  clients.forEach((client) => {
-    document.body.insertAdjacentHTML("beforeend", containerHTML(client.id));
-    updateTemperature(client.id, client.internal_temp);
-    updateFlow(client.id, client.is_flowing);
-
-    if (client.command) {
-      updateCommandType(client.id, client.command.command_type);
-      updateCommandTime(client.id, client.command.duration_seconds);
-    } else {
-      updateCommandType(client.id, "None");
-      updateCommandTime(client.id, 0);
-    }
-    pulseContainer(document.getElementById(client.id));
-  });
-}
-
-init();

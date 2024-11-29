@@ -12,7 +12,7 @@ use super::Tank;
 #[async_trait]
 impl TaskTank for Tank {
     // Task
-    async fn new_task(&self, list_id: ID, content: Content) -> Result<ID> {
+    async fn new_task(&self, list_id: ID, title: String, content: Content) -> Result<ID> {
         todo!()
     }
     async fn get_task(&self, id: ID) -> Result<Task> {

@@ -34,7 +34,7 @@ pub trait ListTank {
 #[async_trait::async_trait]
 pub trait TaskTank {
     // Task
-    async fn new_task(&self, list_id: ID, content: Content) -> Result<ID>;
+    async fn new_task(&self, list_id: ID, title: String, content: Content) -> Result<ID>;
     async fn get_task(&self, id: ID) -> Result<Task>;
     async fn get_tasks(&self, list_id: ID) -> Result<Vec<Task>>;
     async fn update_task(&self, id: ID, new: Task) -> Result<()>;
