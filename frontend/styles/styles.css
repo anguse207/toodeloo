@@ -27,6 +27,22 @@ body {
 .task-title {
   font-size: 1.1em;
   font-weight: bold;
+  background: none;
+  border: none;
+  width: 25em;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-title:focus {
+  border: none;
+  background: none;
+  outline: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task-date {
@@ -82,6 +98,8 @@ body {
   margin-bottom: 10em;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  background-color: white;
+  opacity: 0.9;
 }
 
 .toolbar {

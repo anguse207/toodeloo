@@ -38,11 +38,27 @@ const task_2 = {
   deleted_time: 0,
 };
 
+const task_3 = {
+  id: "3",
+  list_id: "1",
+  origin_time: 1730901689,
+  title: "",
+  content: "", // Assuming 'Content' is a nested object or structure; replace with an appropriate type or value.
+  done: false,
+  snoozed_until: 0,
+  deleted_time: 0,
+};
+
 const taskHTML = (id, title, date) => `
   <div class="task-container fade-in" id="task-container-${id}">
     <div class="task-header">
     <div>
-        <span class="task-title" id="task-title-${id}">${title}</span>
+        <input 
+          class="task-title"
+          id="task-title-${id}" 
+          placeholder="Enter task title..." 
+          value="${title}">
+        </input>
         <br />
         <span class="task-date">${date}</span>
     </div>
@@ -64,11 +80,21 @@ function renderTask(task) {
     taskHTML(task.id, task.title, date)
   );
 
-  // // Initialize the Quill editor
-  // var quill_title = new Quill(`#task-title-${task.id}`, {
-  //   theme: "bubble",
-  //   placeholder: "Name Your Baby", // TODO: Make this random, like 'Complete your masterpiece'...
-  // });
+  var title_input = document.getElementById(`task-title-${task.id}`);
+
+  const characterLimit = 35;
+  title_input.addEventListener("input", (e) => {
+    console.log("Title changed!");
+    const text = e.target.value;
+    if (text.length > characterLimit) {
+      // TODO: Show a message to the user / animate the input box
+      const truncated = text.substring(0, characterLimit);
+      e.target.value = truncated;
+      // TODO: Save the (trunacted) title to the backend
+    } else {
+      // TODO: Save the title to the backend
+    }
+  });
 
   // Initialize the Quill editor
   var quill_content = new Quill(`#task-content-${task.id}`, {
@@ -88,12 +114,12 @@ function renderTask(task) {
   hide(toolbar);
 
   editor.addEventListener("focusout", () => {
-    setTimeout(() => { // Delay the hiding of the toolbar to allow the user to click on it
+    setTimeout(() => {
+      // Delay the hiding of the toolbar to allow the user to click on it
       if (!in_toolbar) {
         hide(toolbar);
       }
-    },
-    0);
+    }, 0);
   });
 
   editor.addEventListener("focusin", () => {
@@ -111,7 +137,11 @@ function renderTask(task) {
 
   taskContainer.addEventListener("focusout", () => {
     // TODO: Save the content to the backend
-    console.log(`Content Not Saved!\nID: :${task.id}\n${JSON.stringify(quill_content.getContents())}`);
+    console.log(
+      `Content Not Saved!\nID: :${task.id}\n${JSON.stringify(
+        quill_content.getContents()
+      )}`
+    );
   });
 
   // Add event listeners to the buttons...
@@ -123,6 +153,7 @@ function renderTask(task) {
 document.addEventListener("DOMContentLoaded", () => {
   renderTask(task_1);
   renderTask(task_2);
+  renderTask(task_3);
 
   // document.body.insertAdjacentHTML("beforeend", taskHTML(0));
 
