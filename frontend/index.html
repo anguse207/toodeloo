@@ -7,6 +7,8 @@
     <!-- <link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico" /> -->
     <link rel="stylesheet" href="styles/styles.css" />
     <link rel="stylesheet" href="styles/animations.css" />
+    <link rel="stylesheet" href="styles/tasks.css" />
+    <link rel="stylesheet" href="styles/header.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css"
       rel="stylesheet"
@@ -17,7 +19,18 @@
     />
   </head>
   <body>
-    <h1>Task List</h1>
+    <div class="header">
+      <h1>toode-loo</h1>
+      <div class="header-select">
+          <select>
+              <option>Option 1 (up to 40 characters)</option>
+              <option>Option 2 (up to 40 characters)</option>
+              <option>Option 3 (up to 40 characters)</option>
+              <!-- Add more options as needed -->
+          </select>
+      </div>
+      <button class="sign-in">Sign In</button>
+  </div>
     <div id="tasks-container"></div>
     <div id="extra-scroll"></div>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
