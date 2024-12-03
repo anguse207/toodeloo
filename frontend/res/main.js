@@ -2,15 +2,20 @@ const task_1 = {
   id: "1",
   list_id: "1",
   origin_time: 1732901689,
-  title: "Shopping List",
+  title: "Progress",
   content: {
     ops: [
-      { insert: "Milk" },
-      { attributes: { list: "ordered" }, insert: "\n" },
-      { insert: "Cheese" },
-      { attributes: { list: "ordered" }, insert: "\n" },
-      { insert: "Chicken" },
-      { attributes: { list: "ordered" }, insert: "\n" },
+      {
+        insert:
+          "Completed - ✅\nProgressing - 🏋️\nIncomplete - ❌\n\nImplement backend API",
+      },
+      { attributes: { list: "bullet" }, insert: "\n" },
+      { insert: "Determine between REST and / or WS" },
+      { attributes: { indent: 1, list: "bullet" }, insert: "\n" },
+      { insert: "Look into openAPI + codegen" },
+      { attributes: { indent: 1, list: "bullet" }, insert: "\n" },
+      { insert: "Mock API for frontend, " },
+      { attributes: { list: "bullet" }, insert: "\n" },
     ],
   }, // Assuming 'Content' is a nested object or structure; replace with an appropriate type or value.
   done: false,
@@ -189,15 +194,15 @@ async function pulseContainer(element) {
 }
 
 let lastScrollY = 0;
-const header = document.getElementById('header');
+const header = document.getElementById("header");
 
-window.addEventListener('scroll', () => {
-    if (window.scrollY > lastScrollY) {
-        // Scrolling down
-        header.classList.add('hidden');
-    } else {
-        // Scrolling up
-        header.classList.remove('hidden');
-    }
-    lastScrollY = window.scrollY;
+window.addEventListener("scroll", () => {
+  if (window.scrollY > lastScrollY) {
+    // Scrolling down
+    header.classList.add("hidden");
+  } else {
+    // Scrolling up
+    header.classList.remove("hidden");
+  }
+  lastScrollY = window.scrollY;
 });
