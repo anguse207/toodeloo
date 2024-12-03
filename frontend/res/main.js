@@ -155,8 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTask(task_2);
   renderTask(task_3);
 
-  // document.body.insertAdjacentHTML("beforeend", taskHTML(0));
-
   // // Loading Data
   // quill.setContents(test_data);
 
@@ -189,3 +187,17 @@ async function pulseContainer(element) {
     element.classList.remove("pulse-text");
   }, 400);
 }
+
+let lastScrollY = 0;
+const header = document.getElementById('header');
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > lastScrollY) {
+        // Scrolling down
+        header.classList.add('hidden');
+    } else {
+        // Scrolling up
+        header.classList.remove('hidden');
+    }
+    lastScrollY = window.scrollY;
+});
