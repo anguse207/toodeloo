@@ -14,17 +14,14 @@ use super::Tank;
 #[async_trait]
 impl UserTank for Tank {
     async fn new_user(&self, nick: &str) -> Result<Uuid> {
-        // Make sure the id is unique
-        let mut id: Uuid = Uuid::new_v4();
-        while (self.get_user(&id).await.is_ok()) {
-            id = Uuid::new_v4();
-        }
-
+        // TODO: Make sure the id is unique
+        let id = Uuid::new_v4();
+        
         // Insert the new user
         query("INSERT INTO users (id, nick, token, deleted_time) VALUES (?, ?, ?, ?)")
             .bind(&id.to_string())
             .bind(nick)
-            .bind(None::<Uuid>)
+            .bind(Uuid::new_v4().to_string())
             .bind(0)
             .execute(&self.pool)
             .await?;

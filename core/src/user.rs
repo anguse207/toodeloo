@@ -5,7 +5,7 @@ use uuid::Uuid;
 pub struct User {
     pub id: Uuid,
     pub nick: String,
-    pub token: Option<Uuid>,
+    pub token: Uuid,
     pub deleted_time: u64,
 }
 
@@ -14,7 +14,7 @@ impl User {
         Self {
             id: Uuid::new_v4(),
             nick: nick.into(),
-            token: None,
+            token: Uuid::new_v4(),
             deleted_time: 0,
         }
     }
@@ -26,7 +26,8 @@ impl<'r> FromRow<'r, sqlx::sqlite::SqliteRow> for User {
             id: Uuid::parse_str(row.try_get::<String, _>("id")?.as_str())
                 .map_err(|_| Error::Decode("invalid UUID format".into()))?,
             nick: row.try_get("nick")?,
-            token: row.try_get("token")?,
+            token: Uuid::parse_str(row.try_get::<String, _>("token")?.as_str())
+                .map_err(|_| Error::Decode("invalid UUID format".into()))?,
             deleted_time: row.try_get("deleted_time")?,
         })
     }
