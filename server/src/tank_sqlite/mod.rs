@@ -1,6 +1,6 @@
-mod list_impl;
-mod task_impl;
 mod user_impl;
+// mod list_impl;
+// mod task_impl;
 
 use anyhow::Result;
 use sqlx::SqlitePool;
@@ -30,6 +30,7 @@ impl Tank {
             CREATE TABLE Users (
                 id TEXT PRIMARY KEY,
                 nick TEXT NOT NULL,
+                token TEXT,
                 deleted_time INTEGER NOT NULL
             )
             "#,

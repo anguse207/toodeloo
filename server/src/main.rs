@@ -11,23 +11,23 @@ async fn main() -> Result<()> {
     let tank = init_db("testing.db").await?;
 
     // Create 2 user
-    let nick_id = tank.new_user("Nick".to_string()).await?;
+    let nick_id = tank.new_user("Nick").await?;
     println!("Created user with ID: {}", nick_id);
 
     // Get all users
     println!("Users: {:?}", tank.get_users().await?);
     
     // Get user
-    let mut nick = tank.get_user(nick_id.clone()).await?;
+    let mut nick = tank.get_user(&nick_id.clone()).await?;
 
     // Update user / Mark deleted
     nick.deleted_time = get_timestamp();
-    tank.update_user(nick_id.clone(), nick).await?;
+    tank.update_user(&nick_id.clone(), &nick).await?;
 
     println!("Users: {:?}", tank.get_users().await?);
 
     // Remove user
-    tank.remove_user(nick_id).await?;
+    tank.remove_user(&nick_id).await?;
 
     // Get all users
     println!("Users: {:?}", tank.get_users().await?);

@@ -1,23 +1,34 @@
-use sqlx::FromRow;
+use sqlx::{Error, FromRow, Row};
 use uuid::Uuid;
 
-use crate::tank_traits::ID;
-
-#[derive(FromRow, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct List {
-    pub id: String,
-    pub user_id: String,
+    pub id: Uuid,
+    pub user_id: Uuid,
     pub label: String,
     pub deleted_time: u64,
 }
 
 impl List {
-    pub fn new(user_id: ID, label: &str) -> Self {
+    pub fn new(user_id: Uuid, label: &str) -> Self {
         Self {
-            id: Uuid::new_v4().to_string(),
+            id: Uuid::new_v4(),
             user_id,
             label: label.into(),
             deleted_time: 0,
         }
+    }
+}
+
+impl<'r> FromRow<'r, sqlx::sqlite::SqliteRow> for List {
+    fn from_row(row: &'r sqlx::sqlite::SqliteRow) -> Result<Self, Error> {
+        Ok(List {
+            id: Uuid::parse_str(row.try_get::<String, _>("id")?.as_str())
+                .map_err(|_| Error::Decode("invalid UUID format".into()))?,
+            user_id: Uuid::parse_str(row.try_get::<String, _>("user_id")?.as_str())
+                .map_err(|_| Error::Decode("invalid UUID format".into()))?,
+            label: row.try_get("label")?,
+            deleted_time: row.try_get("deleted_time")?,
+        })
     }
 }

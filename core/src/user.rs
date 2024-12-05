@@ -1,19 +1,33 @@
-use sqlx::FromRow;
+use sqlx::{Error, FromRow, Row};
 use uuid::Uuid;
 
-#[derive(FromRow, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct User {
-    pub id: String,
+    pub id: Uuid,
     pub nick: String,
+    pub token: Option<Uuid>,
     pub deleted_time: u64,
 }
 
 impl User {
     pub fn new(nick: &str) -> Self {
         Self {
-            id: Uuid::new_v4().to_string(),
+            id: Uuid::new_v4(),
             nick: nick.into(),
+            token: None,
             deleted_time: 0,
         }
+    }
+}
+
+impl<'r> FromRow<'r, sqlx::sqlite::SqliteRow> for User {
+    fn from_row(row: &'r sqlx::sqlite::SqliteRow) -> Result<Self, Error> {
+        Ok(User {
+            id: Uuid::parse_str(row.try_get::<String, _>("id")?.as_str())
+                .map_err(|_| Error::Decode("invalid UUID format".into()))?,
+            nick: row.try_get("nick")?,
+            token: row.try_get("token")?,
+            deleted_time: row.try_get("deleted_time")?,
+        })
     }
 }

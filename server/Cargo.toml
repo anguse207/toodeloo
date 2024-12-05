@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 toodeloo-core = { path = "../core" }
 tokio = { version = "1.41.1", features = ["full"] }
-uuid = { version = "1.11.0", features = ["v4", "fast-rng"] }
+uuid = { version = "1.11.0" }
 sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio-native-tls"] }
 anyhow = "1.0.93"
 async-trait = "0.1.83"

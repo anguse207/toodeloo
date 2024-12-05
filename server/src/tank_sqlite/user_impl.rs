@@ -1,5 +1,5 @@
 use toodeloo_core::{
-    tank_traits::{UserTank, ID},
+    tank_traits::UserTank,
     user::User,
 };
 
@@ -13,26 +13,28 @@ use super::Tank;
 #[allow(unused)]
 #[async_trait]
 impl UserTank for Tank {
-    async fn new_user(&self, nick: String) -> Result<ID> {
+    async fn new_user(&self, nick: &str) -> Result<Uuid> {
         // Make sure the id is unique
         let mut id: Uuid = Uuid::new_v4();
-        while (self.get_user(id.to_string()).await.is_ok()) {
+        while (self.get_user(&id).await.is_ok()) {
             id = Uuid::new_v4();
         }
 
-        query("INSERT INTO users (id, nick, deleted_time) VALUES (?, ?, ?)")
-            .bind(id.clone().to_string())
+        // Insert the new user
+        query("INSERT INTO users (id, nick, token, deleted_time) VALUES (?, ?, ?, ?)")
+            .bind(&id.to_string())
             .bind(nick)
+            .bind(None::<Uuid>)
             .bind(0)
             .execute(&self.pool)
             .await?;
 
-        Ok(id.to_string())
+        Ok(id)
     }
 
-    async fn get_user(&self, id: ID) -> Result<User> {
-        let user = query_as::<_, User>("SELECT id, nick, deleted_time FROM users WHERE id = ?")
-            .bind(id)
+    async fn get_user(&self, id: &Uuid) -> Result<User> {
+        let user = query_as::<_, User>("SELECT id, nick, token, deleted_time FROM users WHERE id = ?")
+            .bind(id.to_string())
             .fetch_one(&self.pool)
             .await?;
 
@@ -47,11 +49,12 @@ impl UserTank for Tank {
         Ok(users)
     }
 
-    async fn update_user(&self, id: ID, new: User) -> Result<()> {
-        query("UPDATE users SET nick = ?, deleted_time = ? WHERE id = ?")
-            .bind(new.nick)
+    async fn update_user(&self, id: &Uuid, new: &User) -> Result<()> {
+        query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
+            .bind(&new.nick)
             .bind(new.deleted_time as i64)
-            .bind(id)
+            .bind(new.token)
+            .bind(id.to_string())
             .execute(&self.pool)
             .await?;
 
@@ -59,13 +62,12 @@ impl UserTank for Tank {
     }
 
     // This would only be used in batch, soft delete is done in `update_user()``
-    async fn remove_user(&self, id: ID) -> Result<()> {
+    async fn remove_user(&self, id: &Uuid) -> Result<()> {
         let rows = query("DELETE FROM users WHERE id = ?")
-            .bind(id)
+            .bind(id.to_string())
             .execute(&self.pool)
             .await?;
 
-        println!("{}", rows.rows_affected());
         Ok(())
     }
 }
