@@ -24,6 +24,12 @@
 .header h1 {
     margin: 0;
     font-size: 20px;
+    transition: transform 0.4s ease;
+}
+.header h1:hover {
+    opacity: 0.7;
+    transform: translateX(5%);
+
 }
 
 .header-select {
@@ -65,9 +71,10 @@
     border-radius: 4px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    /* width: 8em; */
+    transition: transform 0.4s ease;
 }
 
 .sign-in:hover {
     opacity: 0.7;
+    transform: translateX(-5%);
 }
