@@ -1,3 +1,6 @@
+// const host = window.location.origin + /;
+const host = "file:///home/gus/repos/toodeloo/frontend/";
+
 const task_1 = {
   id: "1",
   list_id: "1",
@@ -205,4 +208,10 @@ window.addEventListener("scroll", () => {
     header.classList.remove("hidden");
   }
   lastScrollY = window.scrollY;
+});
+
+document.getElementById("header-select").addEventListener("change", (e) => {
+  var selectedId = e.target.options[e.target.selectedIndex].id;
+  var url = `${host}lists?id=${selectedId}&token=1234`;
+  // window.location.href = url;
 });
