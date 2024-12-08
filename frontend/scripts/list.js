@@ -20,6 +20,8 @@ function loadList(listId) {
     .catch((error) => {
       console.error("There was a problem with the fetch operation:", error);
     });
+    setLastListCookie(listId);
+    printCookies();
 }
 
 function loadTasks(tasks) {

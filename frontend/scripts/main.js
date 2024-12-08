@@ -2,7 +2,6 @@
 const host = "file:///home/gus/repos/toodeloo/frontend";
 var userToken = "1234";
 
-
 async function pulseContainer(element) {
   element.classList.add("pulse-text");
   setTimeout(() => {
@@ -20,4 +19,16 @@ window.addEventListener("scroll", () => {
     header.classList.remove("hidden");
   }
   lastScrollY = window.scrollY;
+});
+
+// For dev purposes
+document.addEventListener("DOMContentLoaded", function() {
+  // clearCookies();
+  setAuthToken(userToken);
+
+  // Load the last list
+  var lastListId = getCookie("last_list");
+  if (lastListId) {
+    loadList(lastListId);
+  }
 });
