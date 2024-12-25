@@ -1,6 +1,6 @@
+mod list_impl;
+mod task_impl;
 mod user_impl;
-// mod list_impl;
-// mod task_impl;
 
 use anyhow::Result;
 use sqlx::SqlitePool;
@@ -59,15 +59,13 @@ impl Tank {
             CREATE TABLE Tasks (
                 id TEXT PRIMARY KEY,
                 list_id TEXT NOT NULL,
-                user_id TEXT NOT NULL,
                 origin_time INTEGER NOT NULL,
-                content TEXT NOT NULL,
+                title TEXT,
+                content TEXT,
                 done BOOLEAN NOT NULL,
                 snoozed_until INTEGER NOT NULL,
                 deleted_time INTEGER NOT NULL,
-                FOREIGN KEY (user_id) REFERENCES Users(id),
                 FOREIGN KEY (list_id) REFERENCES Lists(id)
-
             )
             "#,
         )

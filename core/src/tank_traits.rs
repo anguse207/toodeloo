@@ -1,11 +1,7 @@
 use anyhow::Result;
 use uuid::Uuid;
 
-use crate::{
-    list::List,
-    task::Task,
-    user::User,
-};
+use crate::{list::List, task::Task, user::User};
 
 // Traits for implementing a storage mechanism
 #[async_trait::async_trait]

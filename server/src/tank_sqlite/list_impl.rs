@@ -1,7 +1,5 @@
-use toodeloo_core::{
-    list::List,
-    tank_traits::ListTank,
-};
+use sqlx::{query, query_as};
+use toodeloo_core::{list::List, tank_traits::ListTank};
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -9,23 +7,58 @@ use uuid::Uuid;
 
 use super::Tank;
 
-#[allow(unused)]
 #[async_trait]
 impl ListTank for Tank {
-    // List
-    async fn new_list(&self, user_id: Uuid, label: &str) -> Result<Uuid> {
-        todo!()
+    async fn new_list(&self, user_id: &Uuid, label: &str) -> Result<Uuid> {
+        let id = Uuid::new_v4();
+
+        query("INSERT INTO lists (id, user_id, label, deleted_time) VALUES (?, ?, ?, ?)")
+            .bind(id.to_string())
+            .bind(user_id.to_string())
+            .bind(label)
+            .bind(0)
+            .execute(&self.pool)
+            .await?;
+
+        Ok(id)
     }
-    async fn get_list(&self, list_id: Uuid) -> Result<List> {
-        todo!()
+
+    async fn get_list(&self, list_id: &Uuid) -> Result<List> {
+        let list =
+            query_as::<_, List>("SELECT id, user_id, label, deleted_time FROM lists WHERE id = ?")
+                .bind(list_id.to_string())
+                .fetch_one(&self.pool)
+                .await?;
+
+        Ok(list)
     }
-    async fn get_lists(&self, user_id: Uuid) -> Result<Vec<List>> {
-        todo!()
+
+    async fn get_lists(&self, user_id: &Uuid) -> Result<Vec<List>> {
+        let lists =
+            query_as::<_, List>("SELECT * FROM lists WHERE user_id = ? AND deleted_time = 0")
+                .bind(user_id.to_string())
+                .fetch_all(&self.pool)
+                .await?;
+
+        Ok(lists)
     }
-    async fn update_list(&self, list_id: Uuid, new: List) -> Result<()> {
-        todo!()
+    async fn update_list(&self, list_id: &Uuid, new: &List) -> Result<()> {
+        query("UPDATE lists SET user_id = ?, label = ?, deleted_time = ? WHERE id = ?")
+            .bind(new.user_id.to_string())
+            .bind(new.label.to_string())
+            .bind(new.deleted_time as i64)
+            .bind(list_id.to_string())
+            .execute(&self.pool)
+            .await?;
+
+        Ok(())
     }
-    async fn remove_list(&self, list_id: Uuid) -> Result<()> {
-        todo!()
+    async fn remove_list(&self, list_id: &Uuid) -> Result<()> {
+        let _ = query("DELETE FROM lists WHERE id = ?")
+            .bind(list_id.to_string())
+            .execute(&self.pool)
+            .await?;
+
+        Ok(())
     }
 }

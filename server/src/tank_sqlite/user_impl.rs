@@ -1,7 +1,4 @@
-use toodeloo_core::{
-    tank_traits::UserTank,
-    user::User,
-};
+use toodeloo_core::{tank_traits::UserTank, user::User, DEFAULT_DELETED_TIME};
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -14,15 +11,15 @@ use super::Tank;
 #[async_trait]
 impl UserTank for Tank {
     async fn new_user(&self, nick: &str) -> Result<Uuid> {
-        // TODO: Make sure the id is unique
+        // TODO: Make sure the id is unique, might not be required...
         let id = Uuid::new_v4();
-        
+
         // Insert the new user
         query("INSERT INTO users (id, nick, token, deleted_time) VALUES (?, ?, ?, ?)")
-            .bind(&id.to_string())
+            .bind(id.to_string())
             .bind(nick)
             .bind(Uuid::new_v4().to_string())
-            .bind(0)
+            .bind(DEFAULT_DELETED_TIME)
             .execute(&self.pool)
             .await?;
 
@@ -30,10 +27,11 @@ impl UserTank for Tank {
     }
 
     async fn get_user(&self, id: &Uuid) -> Result<User> {
-        let user = query_as::<_, User>("SELECT id, nick, token, deleted_time FROM users WHERE id = ?")
-            .bind(id.to_string())
-            .fetch_one(&self.pool)
-            .await?;
+        let user =
+            query_as::<_, User>("SELECT id, nick, token, deleted_time FROM users WHERE id = ?")
+                .bind(id.to_string())
+                .fetch_one(&self.pool)
+                .await?;
 
         Ok(user)
     }
@@ -47,7 +45,7 @@ impl UserTank for Tank {
     }
 
     async fn update_user(&self, id: &Uuid, new: &User) -> Result<()> {
-        query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
+        let _ = query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
             .bind(&new.nick)
             .bind(new.deleted_time as i64)
             .bind(new.token)
@@ -60,7 +58,7 @@ impl UserTank for Tank {
 
     // This would only be used in batch, soft delete is done in `update_user()``
     async fn remove_user(&self, id: &Uuid) -> Result<()> {
-        let rows = query("DELETE FROM users WHERE id = ?")
+        let _ = query("DELETE FROM users WHERE id = ?")
             .bind(id.to_string())
             .execute(&self.pool)
             .await?;
