@@ -11,7 +11,6 @@ use super::Tank;
 #[async_trait]
 impl UserTank for Tank {
     async fn new_user(&self, nick: &str) -> Result<Uuid> {
-        // TODO: Make sure the id is unique, might not be required...
         let id = Uuid::new_v4();
 
         // Insert the new user
@@ -57,6 +56,7 @@ impl UserTank for Tank {
     }
 
     // This would only be used in batch, soft delete is done in `update_user()``
+    // This will fail if there is a foreign key constraint (lists, tasks)
     async fn remove_user(&self, id: &Uuid) -> Result<()> {
         let _ = query("DELETE FROM users WHERE id = ?")
             .bind(id.to_string())

@@ -5,9 +5,13 @@ use std::fs::{self, File};
 use anyhow::{Ok, Result};
 use tank_sqlite::Tank;
 use toodeloo_core::tank_traits::{ListTank, TaskTank, UserTank};
+use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // setup tracing for stdout logging
+    tracing_subscriber::fmt::init();
+    info!("Starting Logging...");
     let tank = init_db("testing.db").await?;
 
     // Create 2 user
@@ -21,21 +25,26 @@ async fn main() -> Result<()> {
     let _nick = tank.get_user(&nick_id.clone()).await?;
 
     // Create list
-    let list_id = tank.new_list(&nick_id, "Groceries").await?;
+    let list_id = tank.new_list(&nick_id, "Daily Chores").await?;
     println!("Lists: {:?}", tank.get_lists(&nick_id).await?);
 
     // Create task
-    let task_id = tank
+    let shopping_task = tank
         .new_task(&list_id, "Shopping List", "Milk, Eggs, Cheese")
         .await?;
+    let laundry_task = tank
+        .new_task(&list_id, "Laundry", "Wash clothes and hang them to dry")
+        .await?;
+
     println!("Tasks: {:?}", tank.get_tasks(&list_id).await?);
 
     // Update user / Mark deleted
     // nick.deleted_time = get_timestamp();
     // tank.update_user(&nick_id.clone(), &nick).await?;
 
-    // Remove Task
-    tank.remove_task(&task_id).await?;
+    // Remove Tasks
+    tank.remove_task(&shopping_task).await?;
+    tank.remove_task(&laundry_task).await?;
     // Remove list
     tank.remove_list(&list_id).await?;
     // Remove user
