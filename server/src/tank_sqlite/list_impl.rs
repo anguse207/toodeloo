@@ -42,6 +42,7 @@ impl ListTank for Tank {
 
         Ok(lists)
     }
+
     async fn update_list(&self, list_id: &Uuid, new: &List) -> Result<()> {
         query("UPDATE lists SET user_id = ?, label = ?, deleted_time = ? WHERE id = ?")
             .bind(new.user_id.to_string())
@@ -53,6 +54,7 @@ impl ListTank for Tank {
 
         Ok(())
     }
+
     async fn remove_list(&self, list_id: &Uuid) -> Result<()> {
         let _ = query("DELETE FROM lists WHERE id = ?")
             .bind(list_id.to_string())

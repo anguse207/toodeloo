@@ -12,3 +12,5 @@ anyhow = "1.0.93"
 async-trait = "0.1.83"
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"
+axum = "0.7.9"
+serde = { version = "1.0.217", features = ["derive"] }

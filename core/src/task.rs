@@ -1,9 +1,10 @@
+use serde::Serialize;
 use sqlx::{Error, FromRow, Row};
 use uuid::Uuid;
 
 use crate::timing::get_timestamp;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct Task {
     pub id: Uuid,
     pub list_id: Uuid,
