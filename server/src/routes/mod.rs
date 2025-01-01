@@ -14,10 +14,10 @@ pub async fn create_router(tank: Tank) -> Router {
         .route("/", get(test_handler))
         // Users
         .route("/users", get(users::get_users))
-        .route("/users/:nickname", post(users::new_user))
         .route(
-            "/users/:user_id",
-            get(users::get_user)
+            "/users/:param",
+            post(users::new_user)
+                .get(users::get_user)
                 .put(users::update_user)
                 .delete(users::remove_user),
         )

@@ -1,7 +1,11 @@
 use anyhow::Result;
 use uuid::Uuid;
 
-use crate::{list::List, task::Task, user::User};
+use crate::{
+    list::List,
+    task::Task,
+    user::{UpdateUser, User},
+};
 
 // Traits for implementing a storage mechanism
 #[async_trait::async_trait]
@@ -10,7 +14,7 @@ pub trait UserTank {
     async fn new_user(&self, nick: &str) -> Result<Uuid>;
     async fn get_user(&self, id: &Uuid) -> Result<User>;
     async fn get_users(&self) -> Result<Vec<User>>;
-    async fn update_user(&self, id: &Uuid, new: &User) -> Result<()>;
+    async fn update_user(&self, id: &Uuid, new: &UpdateUser) -> Result<()>;
     async fn remove_user(&self, id: &Uuid) -> Result<()>;
 }
 

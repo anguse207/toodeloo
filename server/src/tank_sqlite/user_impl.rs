@@ -1,4 +1,8 @@
-use toodeloo_core::{tank_traits::UserTank, user::User, DEFAULT_DELETED_TIME};
+use toodeloo_core::{
+    tank_traits::UserTank,
+    user::{UpdateUser, User},
+    DEFAULT_DELETED_TIME,
+};
 
 use anyhow::Result;
 use async_trait::async_trait;
@@ -43,7 +47,7 @@ impl UserTank for Tank {
         Ok(users)
     }
 
-    async fn update_user(&self, id: &Uuid, new: &User) -> Result<()> {
+    async fn update_user(&self, id: &Uuid, new: &UpdateUser) -> Result<()> {
         let _ = query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
             .bind(&new.nick)
             .bind(new.deleted_time as i64)
