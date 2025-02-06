@@ -1,5 +1,4 @@
 use axum::{
-    extract::State,
     routing::{get, post},
     Router,
 };
@@ -10,7 +9,7 @@ use crate::tank_sqlite::Tank;
 mod users;
 
 pub async fn create_router(tank: Tank) -> Router {
-    let app = Router::new()
+    Router::new()
         .route("/", get(test_handler))
         // Users
         .route("/users", get(users::get_users))
@@ -23,9 +22,7 @@ pub async fn create_router(tank: Tank) -> Router {
         )
         // Lists
         // Tasks
-        .with_state(tank);
-
-    app
+        .with_state(tank)
 }
 
 async fn test_handler() -> impl axum::response::IntoResponse {

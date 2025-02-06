@@ -4,7 +4,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use serde::Deserialize;
+// use serde::Deserialize;
 use toodeloo_core::{tank_traits::UserTank, user::UpdateUser};
 use tracing::*;
 use uuid::Uuid;
@@ -35,12 +35,12 @@ pub async fn get_user(State(tank): State<Tank>, Path(user_id): Path<String>) -> 
     if let Ok(user_id) = user_id.parse::<Uuid>() {
         let user = tank.get_user(&user_id).await;
 
-        return match user {
+        match user {
             Ok(user) => (StatusCode::OK, Json(Some(user))),
             Err(_) => (StatusCode::NOT_FOUND, Json(None)),
-        };
+        }
     } else {
-        return (StatusCode::BAD_REQUEST, Json(None));
+        (StatusCode::BAD_REQUEST, Json(None))
     }
 }
 
