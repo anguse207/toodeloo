@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{Error, FromRow, Row};
 use uuid::Uuid;
 
@@ -7,6 +7,17 @@ use crate::timing::get_timestamp;
 #[derive(Debug, PartialEq, Serialize)]
 pub struct Task {
     pub id: Uuid,
+    pub list_id: Uuid,
+    pub origin_time: u64,
+    pub title: String,
+    pub content: String,
+    pub done: bool,
+    pub snoozed_until: u64,
+    pub deleted_time: u64,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+pub struct UpdateTask {
     pub list_id: Uuid,
     pub origin_time: u64,
     pub title: String,

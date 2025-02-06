@@ -1,10 +1,17 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{Error, FromRow, Row};
 use uuid::Uuid;
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct List {
     pub id: Uuid,
+    pub user_id: Uuid,
+    pub label: String,
+    pub deleted_time: u64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct UpdateList {
     pub user_id: Uuid,
     pub label: String,
     pub deleted_time: u64,
