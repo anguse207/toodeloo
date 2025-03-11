@@ -7,16 +7,16 @@ import Tasks from './Tasks';
 import Task from './component/Task';
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/task" element={<Task />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/task" element={<Task />} />
+                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
