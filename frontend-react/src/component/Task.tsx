@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { TextField, Box } from '@mui/material';
-import Tiptap from './Tiptap';
+import TaskContent from './TaskContent';
 
 const Task = () => {
     useEffect(() => {}, []);
@@ -9,7 +9,7 @@ const Task = () => {
     const [title, setTitle] = useState('');
 
     return (
-        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2 }}>
+        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2, border: '1px dashed grey', borderRadius: 2}}>
             {/* Task Title */}
             <TextField
                 label="Task Title"
@@ -18,10 +18,8 @@ const Task = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 sx={{ marginBottom: 2 }}
-            />
-
-            {/* Quill Editor for Task Description */}
-            <Tiptap />
+            />  
+            <TaskContent />
         </Box>
     );
 };
