@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 
 export interface TaskProps {
     task: {
-        id: number;
-        creationDate: number;
+        readonly id: string;
+        readonly creationDate: number;
         dueDate: number;
         title: string;
         content: JSONContent[];
@@ -25,26 +25,38 @@ const Task: React.FunctionComponent<TaskProps> = ({task}) => {
 
             setTimeout(() => {
                 if (last_title_update.current + debounce_time < Date.now()) {
-                    console.log("Updated Title: " + title);
-                    // TODO: Impl update logicl
+                    console.log("Updating Title for task: " + task.id);
+                    // TODO: Impl update logic
                 }
             }, debounce_time * 1.25); // * 1.25, so that the timeout 
             //  is longer than the last_update check
         }
-    }, [title, task.title]); // Dependency array ensures it only runs when title changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, [title, task.title]);
 
     return (
-        <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2, border: '1px dashed grey', borderRadius: 2}}>
-            <TextField
-                label="Task Title"
-                variant="outlined"
-                fullWidth
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                sx={{ marginBottom: 2 }}
-            />
-            <TaskContent task={task} />
-        </Box>
+<Box
+    sx={{
+        padding: 2, // Adds padding inside the box
+        maxWidth: 600,
+        margin: '0 auto',
+        boxShadow: 3, // Material-UI shadow level (3 is a moderate shadow)
+        border: '1px solid', // Adds a border
+        borderColor: 'grey.300', // Material-UI theme color for the border
+        borderRadius: 2, // Rounded corners (theme spacing unit)
+        backgroundColor: 'background.paper', // Ensures it matches the theme's background
+    }}
+>
+    <TextField
+        label="Task Title"
+        variant="outlined"
+        fullWidth
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        sx={{ marginBottom: 2 }}
+    />
+    <TaskContent task={task} />
+</Box>
     );
 };
 

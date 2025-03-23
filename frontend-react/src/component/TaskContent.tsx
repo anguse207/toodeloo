@@ -12,6 +12,8 @@ const extensions = [StarterKit, Highlight, Typography, Markdown];
 let content: JSONContent[];
 let last_update = Date.now();
 
+
+
 const TaskContent: React.FunctionComponent<TaskProps> = ({task}) => {
     const editor = useEditor({
         extensions: extensions,
@@ -22,6 +24,7 @@ const TaskContent: React.FunctionComponent<TaskProps> = ({task}) => {
             setTimeout(() => {
                 if (last_update + debounce_time < Date.now()) {
                     SaveContent();
+                    console.log("Updating Content for task: " + task.id);
                 }
             }, debounce_time * 1.25); // * 1.25, so that the timeout 
             //  is longer than the last_update check
