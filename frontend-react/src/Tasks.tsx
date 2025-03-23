@@ -1,84 +1,97 @@
 import ListSelector from './component/ListSelector';
-import Task from './component/Task';
+import Task from './component/TaskPreview';
 import { content_1, content_2 } from './component/test_data/Task';
-import GridLayout from 'react-grid-layout'; // Import react-grid-layout
-import 'react-grid-layout/css/styles.css'; // Import default styles
-import 'react-resizable/css/styles.css'; // Import resizable styles
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 // For Testing
 export const tasks_list = {
-    "tasks": [
+    tasks: [
         {
-            "id": "1",
-            "creationDate": 1741903638,
-            "dueDate": 1742573638,
-            "title": "MUI Box Component",
-            "content": content_1,
-            "completed": true,
+            id: '1',
+            creationDate: 1741903638,
+            dueDate: 1742573638,
+            title: 'Task 1',
+            content: content_1,
+            completed: true,
         },
         {
-            "id": "2",
-            "creationDate": 1741903638,
-            "dueDate": 1742170638,
-            "title": "Research Lorem Ipsum",
-            "content": content_2,
-            "completed": true,
-        },        {
-            "id": "3",
-            "creationDate": 1741903638,
-            "dueDate": 1742573638,
-            "title": "MUI Box Component",
-            "content": content_1,
-            "completed": true,
+            id: '2',
+            creationDate: 1741903638,
+            dueDate: 1742170638,
+            title: 'Task 2',
+            content: content_2,
+            completed: true,
         },
         {
-            "id": "4",
-            "creationDate": 1741903638,
-            "dueDate": 1742170638,
-            "title": "Research Lorem Ipsum",
-            "content": content_2,
-            "completed": true,
-        }
-    ]
+            id: '3',
+            creationDate: 1741903638,
+            dueDate: 1742573638,
+            title: 'Task 3',
+            content: content_1,
+            completed: true,
+        },
+        {
+            id: '4',
+            creationDate: 1741903638,
+            dueDate: 1742170638,
+            title: 'Task 4',
+            content: content_2,
+            completed: true,
+        },
+    ],
 };
 
-// TODO: Hide task content, and only show the title
 function Tasks() {
-    // Define the layout for the grid
-    const layout = tasks_list.tasks.map((task, index) => ({
-        i: task.id, // Unique identifier for each grid item
-        x: (index % 2) * 6, // Start position (2 items per row)
-        y: Math.floor(index / 2), // Row position
-        w: 6, // Width (6/12 = half the grid width)
-        h: 2, // Height (default height)
-    }));
+    const layouts = {
+        lg: tasks_list.tasks.map((task, index) => ({
+            i: task.id,
+            x: index % 3,
+            y: Math.floor(index / 2),
+            w: 1,
+            h: 1,
+        })),
+        md: tasks_list.tasks.map((task, index) => ({
+            i: task.id,
+            x: index % 2,
+            y: Math.floor(index / 2),
+            w: 1,
+            h: 1,
+        })),
+        sm: tasks_list.tasks.map((task, index) => ({
+            i: task.id,
+            x: 0,
+            y: index,
+            w: 1,
+            h: 1,
+        })),
+    };
 
     return (
         <>
             <ListSelector />
-            <GridLayout
-                className="layout"
-                layout={layout} // Pass the layout array
-                cols={12} // Total columns in the grid
-                rowHeight={200} // Height of each row in pixels
-                width={1200} // Total width of the grid in pixels
-                // draggableHandle=".drag-handle" // Optional: Add a drag handle
-            >
-                {tasks_list.tasks.map((task, index) => (
-                    <div
-                        key={task.id}
-                        data-grid={{
-                            i: task.id,
-                            x: (index % 2) * 6,
-                            y: Math.floor(index / 2),
-                            w: 6,
-                            h: 2,
-                        }}
-                    >
-                        <Task task={task} />
-                    </div>
-                ))}
-            </GridLayout>
+            <div>
+                <ResponsiveGridLayout
+                    className="layout"
+                    layouts={layouts}
+                    breakpoints={{ lg: 1920, md: 996, sm: 768 }} // Breakpoints
+                    cols={{ lg: 3, md: 2, sm: 1 }} // Column count, for each breakpoint
+                    rowHeight={300}
+                    margin={[15, 20]} // Spacing
+                    autoSize={true}
+                    isResizable={false}
+                    isDraggable={false}
+                >
+                    {tasks_list.tasks.map((task) => (
+                        <div key={task.id}>
+                            <Task task={task} />
+                        </div>
+                    ))}
+                </ResponsiveGridLayout>
+            </div>
         </>
     );
 }
