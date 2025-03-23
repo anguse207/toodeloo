@@ -14,7 +14,7 @@ const Task: React.FunctionComponent<ITask> = ({ task }) => {
         if (title.length === 0) {
             setTitlePrompt("Name your creation!");
         }
-        
+
         if (title !== task.title) {
             const debounce_time = 1500;
             last_title_update.current = Date.now();
@@ -103,10 +103,7 @@ const Task: React.FunctionComponent<ITask> = ({ task }) => {
                         borderRadius: 2,
                     }}
                 >
-                    <TaskEditor task={task} />
-                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => CloseEditor()}>
-                            Close
-                    </Button>
+                    <TaskEditor task={task} setIsEditorOpen={setIsEditorOpen}/>
                 </Box>
             </Modal>
         </>
