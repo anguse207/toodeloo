@@ -2,17 +2,16 @@ import { TextField, Box, Modal, Button } from '@mui/material';
 import TaskContent from './TaskContent';
 import { useEffect, useRef, useState } from 'react';
 import { ITask } from './ITask';
-import TaskEditor from './TaskEditor';
+import Task from './Task';
 
-
-const Task: React.FunctionComponent<ITask> = ({ task }) => {
+const TaskPreview: React.FunctionComponent<ITask> = ({ task }) => {
     const [title, setTitle] = useState<string>(task.title); // Initialize title state
-    const [titlePrompt, setTitlePrompt] = useState<string>(""); // Initialize title state
+    const [titlePrompt, setTitlePrompt] = useState<string>(''); // Initialize title state
 
     const last_title_update = useRef<number>(Date.now()); // Using useRef to persist the time
     useEffect(() => {
         if (title.length === 0) {
-            setTitlePrompt("Name your creation!");
+            setTitlePrompt('Name your creation!');
         }
 
         if (title !== task.title) {
@@ -42,57 +41,61 @@ const Task: React.FunctionComponent<ITask> = ({ task }) => {
 
     return (
         <>
-        <Box
-                // onClick={OpenEditor} // Open the modal when the box is clicked
-                sx={{
-                padding: 2, // Adds padding inside the box
-                boxShadow: 3, // Material-UI shadow level (3 is a moderate shadow)
-                border: '1px solid', // Adds a border
-                borderColor: 'grey.300',
-                borderRadius: 2,
-                backgroundColor: 'background.paper',
-                position: 'relative',
-            }}
-        >
-            <TextField
-                label={titlePrompt}
-                variant="outlined"
-                fullWidth
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                sx={{ marginBottom: 2 }}
-            />
-            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => OpenEditor()}>
-                Edit
-            </Button>
             <Box
                 sx={{
-                    maxHeight: 150,
-                    overflow: 'hidden',
+                    padding: 2, // Adds padding inside the box
+                    boxShadow: 3, // Material-UI shadow level (3 is a moderate shadow)
+                    border: '1px solid', // Adds a border
+                    borderColor: 'grey.300',
+                    borderRadius: 2,
+                    backgroundColor: 'background.paper',
                     position: 'relative',
                 }}
             >
-                <TaskContent task={task} />
-
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: 50,
-                        background:
-                            'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%)',
-                        pointerEvents: 'none',
-                    }}
+                <TextField
+                    label={titlePrompt}
+                    variant="outlined"
+                    fullWidth
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    sx={{ marginBottom: 2 }}
                 />
-            </Box>
-        </Box>
-        <Modal open={isEditorOpen} onClose={CloseEditor}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    onClick={() => OpenEditor()}
+                >
+                    Edit
+                </Button>
                 <Box
                     sx={{
-                        height: '80vh',
+                        maxHeight: 150,
+                        overflow: 'hidden',
+                        position: 'relative',
+                    }}
+                >
+                    <TaskContent task={task} editable={false}/>
+
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: 50,
+                            background:
+                                'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%)',
+                            pointerEvents: 'none',
+                        }}
+                    />
+                </Box>
+            </Box>
+            <Modal open={isEditorOpen} onClose={CloseEditor}>
+                <Box
+                    sx={{
                         width: '85vw',
+                        height: '85vh', // Set a fixed height for the modal
                         position: 'absolute',
                         top: '50%',
                         left: '50%',
@@ -101,13 +104,14 @@ const Task: React.FunctionComponent<ITask> = ({ task }) => {
                         boxShadow: 24,
                         p: 4,
                         borderRadius: 2,
+                        overflowY: 'auto', // Enable vertical scrolling
                     }}
                 >
-                    <TaskEditor task={task} setIsEditorOpen={setIsEditorOpen}/>
+                    <Task task={task} setIsEditorOpen={setIsEditorOpen} />
                 </Box>
             </Modal>
         </>
     );
 };
 
-export default Task;
+export default TaskPreview;

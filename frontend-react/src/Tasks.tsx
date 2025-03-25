@@ -1,5 +1,5 @@
 import ListSelector from './component/ListSelector';
-import Task from './component/TaskPreview';
+import TaskPreview from './component/TaskPreview';
 import { content_1, content_2 } from './component/test_data/Task';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -87,7 +87,7 @@ function Tasks() {
                 >
                     {tasks_list.tasks.map((task) => (
                         <div key={task.id}>
-                            <Task task={task} />
+                            <TaskPreview task={task} />
                         </div>
                     ))}
                 </ResponsiveGridLayout>

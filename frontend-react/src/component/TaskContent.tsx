@@ -8,15 +8,23 @@ import { ITask } from './ITask';
 
 // define your extension array
 const extensions = [StarterKit, Highlight, Typography, Markdown];
-
 let content: JSONContent[];
 let last_update = Date.now();
 
-const TaskContent: React.FunctionComponent<ITask> = ({ task }) => {
+interface TaskContentProps {
+    task: ITask['task'];
+    editable: boolean;
+}
+
+const TaskContent: React.FunctionComponent<TaskContentProps> = ({ task, editable }) => {
     const editor = useEditor({
         extensions: extensions,
-        editable: false, // Make the editor readonly
+        editable: editable,
         onUpdate: () => {
+            if (!editable) {
+                return;
+            }
+
             const debounce_time = 1500;
             last_update = Date.now();
 
