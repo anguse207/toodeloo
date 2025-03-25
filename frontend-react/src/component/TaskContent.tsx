@@ -8,8 +8,7 @@ import { ITask } from './ITask';
 
 // define your extension array
 const extensions = [StarterKit, Highlight, Typography, Markdown];
-let content: JSONContent[];
-let last_update = Date.now();
+
 
 interface TaskContentProps {
     task: ITask['task'];
@@ -17,6 +16,8 @@ interface TaskContentProps {
 }
 
 const TaskContent: React.FunctionComponent<TaskContentProps> = ({ task, editable }) => {
+    let last_update = Date.now();
+
     const editor = useEditor({
         extensions: extensions,
         editable: editable,
@@ -48,9 +49,9 @@ const TaskContent: React.FunctionComponent<TaskContentProps> = ({ task, editable
     };
 
     const SaveContent = () => {
-        content = editor!.getJSON().content!;
+        task.content = editor!.getJSON().content!;
         // console.log(editor!.storage.markdown.getMarkdown()); < Markdown
-        console.log(content);
+        // console.log(content);
     };
 
     return (
