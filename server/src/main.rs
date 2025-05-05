@@ -1,4 +1,5 @@
 mod routes;
+mod auth;
 
 use anyhow::{Ok, Result};
 use routes::create_router;
