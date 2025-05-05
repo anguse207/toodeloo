@@ -2,18 +2,15 @@ use anyhow::Result;
 use async_trait::async_trait;
 use sqlx::{query, query_as};
 use toodeloo_core::{
-    tank_traits::TaskTank, task::Task, timing::get_timestamp, DEFAULT_DELETED_TIME,
-    DEFAULT_SNOOZED_UNTIL,
+    DEFAULT_DELETED_TIME, DEFAULT_SNOOZED_UNTIL, task::Task, timing::get_timestamp,
 };
 use uuid::Uuid;
 
 use super::Tank;
 
-#[allow(unused)]
-#[async_trait]
-impl TaskTank for Tank {
+impl Tank {
     // Task
-    async fn new_task(&self, list_id: &Uuid, title: &str, content: &str) -> Result<Uuid> {
+    pub async fn new_task(&self, list_id: &Uuid, title: &str, content: &str) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         query("INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
@@ -31,7 +28,7 @@ impl TaskTank for Tank {
         Ok(id)
     }
 
-    async fn get_task(&self, id: &Uuid) -> Result<Task> {
+    pub async fn get_task(&self, id: &Uuid) -> Result<Task> {
         let task = query_as::<_, Task>("SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time FROM tasks WHERE id = ?")
             .bind(id.to_string())
             .fetch_one(&self.pool)
@@ -40,7 +37,7 @@ impl TaskTank for Tank {
         Ok(task)
     }
 
-    async fn get_tasks(&self, list_id: &Uuid) -> Result<Vec<Task>> {
+    pub async fn get_tasks(&self, list_id: &Uuid) -> Result<Vec<Task>> {
         let tasks =
             query_as::<_, Task>("SELECT * FROM tasks WHERE list_id = ? AND deleted_time = 0")
                 .bind(list_id.to_string())
@@ -50,7 +47,7 @@ impl TaskTank for Tank {
         Ok(tasks)
     }
 
-    async fn update_task(&self, id: &Uuid, new: &Task) -> Result<()> {
+    pub async fn update_task(&self, id: &Uuid, new: &Task) -> Result<()> {
         query("UPDATE tasks SET list_id = ?, origin_time = ?, title = ?, content = ?, done = ?, snoozed_until = ?, deleted_time = ? WHERE id = ?")
             .bind(new.list_id.to_string())
             .bind(new.origin_time as i64)
@@ -66,7 +63,7 @@ impl TaskTank for Tank {
         Ok(())
     }
 
-    async fn remove_task(&self, id: &Uuid) -> Result<()> {
+    pub async fn remove_task(&self, id: &Uuid) -> Result<()> {
         let _ = query("DELETE FROM tasks WHERE id = ?")
             .bind(id.to_string())
             .execute(&self.pool)

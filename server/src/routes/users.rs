@@ -1,15 +1,14 @@
 use axum::{
+    Json,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
-    Json,
 };
 // use serde::Deserialize;
-use toodeloo_core::{tank_traits::UserTank, user::UpdateUser};
+use toodeloo_core::user::UpdateUser;
+use toodeloo_tank::sqlite::Tank;
 use tracing::*;
 use uuid::Uuid;
-
-use crate::tank_sqlite::Tank;
 
 pub async fn new_user(
     State(tank): State<Tank>,

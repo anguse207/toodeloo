@@ -1,11 +1,10 @@
 [package]
-name = "toodeloo-server"
+name = "toodeloo-tank"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 toodeloo-core = { path = "../core" }
-toodeloo-tank = { path = "../tank" }
 tokio = { version = "1.41.1", features = ["full"] }
 uuid = { version = "1.11.0" }
 sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio-native-tls"] }

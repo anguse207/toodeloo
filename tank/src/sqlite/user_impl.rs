@@ -1,7 +1,6 @@
 use toodeloo_core::{
-    tank_traits::UserTank,
-    user::{UpdateUser, User},
     DEFAULT_DELETED_TIME,
+    user::{UpdateUser, User},
 };
 
 use anyhow::Result;
@@ -11,10 +10,8 @@ use uuid::Uuid;
 
 use super::Tank;
 
-#[allow(unused)]
-#[async_trait]
-impl UserTank for Tank {
-    async fn new_user(&self, nick: &str) -> Result<Uuid> {
+impl Tank {
+    pub async fn new_user(&self, nick: &str) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         // Insert the new user
@@ -29,7 +26,7 @@ impl UserTank for Tank {
         Ok(id)
     }
 
-    async fn get_user(&self, id: &Uuid) -> Result<User> {
+    pub async fn get_user(&self, id: &Uuid) -> Result<User> {
         let user =
             query_as::<_, User>("SELECT id, nick, token, deleted_time FROM users WHERE id = ?")
                 .bind(id.to_string())
@@ -39,7 +36,7 @@ impl UserTank for Tank {
         Ok(user)
     }
 
-    async fn get_users(&self) -> Result<Vec<User>> {
+    pub async fn get_users(&self) -> Result<Vec<User>> {
         let users = query_as::<_, User>("SELECT * FROM users WHERE deleted_time = 0")
             .fetch_all(&self.pool)
             .await?;
@@ -47,7 +44,7 @@ impl UserTank for Tank {
         Ok(users)
     }
 
-    async fn update_user(&self, id: &Uuid, new: &UpdateUser) -> Result<()> {
+    pub async fn update_user(&self, id: &Uuid, new: &UpdateUser) -> Result<()> {
         let _ = query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
             .bind(&new.nick)
             .bind(new.deleted_time as i64)
@@ -61,7 +58,7 @@ impl UserTank for Tank {
 
     // This would only be used in batch, soft delete is done in `update_user()``
     // This will fail if there is a foreign key constraint (lists, tasks)
-    async fn remove_user(&self, id: &Uuid) -> Result<()> {
+    pub async fn remove_user(&self, id: &Uuid) -> Result<()> {
         let _ = query("DELETE FROM users WHERE id = ?")
             .bind(id.to_string())
             .execute(&self.pool)

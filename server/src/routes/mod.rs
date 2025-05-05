@@ -1,10 +1,10 @@
 use axum::{
-    routing::{get, post},
     Router,
+    routing::{get, post},
 };
+use toodeloo_tank::sqlite::Tank;
 use tracing::info;
 
-use crate::tank_sqlite::Tank;
 
 mod users;
 

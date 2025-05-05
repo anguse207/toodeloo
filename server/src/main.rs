@@ -1,11 +1,10 @@
 mod routes;
-mod tank_sqlite;
 
 use anyhow::{Ok, Result};
 use routes::create_router;
-use tank_sqlite::init_db;
 
 use tokio::net::TcpListener;
+use toodeloo_tank::sqlite::Tank;
 use tracing::info;
 
 #[tokio::main]
@@ -16,8 +15,9 @@ async fn main() -> Result<()> {
         .init();
     info!("Starting Logging...");
 
-    let tank = init_db("testing.db").await?;
+    // let tank = init_db("testing.db").await?;
 
+    let tank = toodeloo_tank::sqlite::init_db("testing.db").await?;
     let app = create_router(tank).await;
 
     let listener = TcpListener::bind("127.0.0.1:4000").await?;

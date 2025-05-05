@@ -1,10 +1,10 @@
 [package]
 name = "toodeloo-core"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-anyhow = "1.0.94"
+anyhow = "1.0.98"
 async-trait = "0.1.83"
 uuid = { version = "1.11.0", features = ["v4", "serde"] }
 sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio", "uuid"] }
