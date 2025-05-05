@@ -3,6 +3,7 @@ use axum::{
     routing::{get, post},
 };
 use toodeloo_tank::sqlite::Tank;
+use tower_http::services::ServeDir;
 use tracing::info;
 
 
@@ -10,7 +11,7 @@ mod users;
 
 pub async fn create_router(tank: Tank) -> Router {
     Router::new()
-        .route("/", get(test_handler))
+        // .route("/", get(test_handler))
         // Users
         .route("/users", get(users::get_users))
         .route(
@@ -22,6 +23,9 @@ pub async fn create_router(tank: Tank) -> Router {
         )
         // Lists
         // Tasks
+        // Serve react app
+        .fallback_service(ServeDir::new("frontend/dist"))
+        // State
         .with_state(tank)
 }
 
