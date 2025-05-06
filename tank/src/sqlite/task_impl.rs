@@ -10,15 +10,15 @@ use super::Tank;
 
 impl Tank {
     // Task
-    pub async fn new_task(&self, list_id: &Uuid, title: &str, content: &str) -> Result<Uuid> {
+    pub async fn new_task(&self, list_id: &Uuid, title: impl AsRef<str>, content: impl AsRef<str>) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         query("INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
             .bind(id.to_string())
             .bind(list_id.to_string())
             .bind(get_timestamp() as i64)
-            .bind(title)
-            .bind(content)
+            .bind(title.as_ref())
+            .bind(content.as_ref())
             .bind(false)
             .bind(DEFAULT_SNOOZED_UNTIL)
             .bind(DEFAULT_DELETED_TIME)

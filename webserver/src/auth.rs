@@ -1,4 +1,10 @@
-use axum::{extract::{Request, State}, http::StatusCode, middleware::Next, response::{IntoResponse, Redirect, Response}, Extension};
+use axum::{
+    Extension,
+    extract::{Request, State},
+    http::StatusCode,
+    middleware::Next,
+    response::{IntoResponse, Redirect, Response},
+};
 use toodeloo_tank::sqlite::Tank;
 use uuid::Uuid;
 
@@ -11,7 +17,7 @@ pub async fn auth_middleware(
 ) -> impl IntoResponse {
     if DEBUG_AUTH {
         println!("Auth Middleware Bypass");
-        return next.run(req).await
+        return next.run(req).await;
     }
 
     // Extract the authorization header

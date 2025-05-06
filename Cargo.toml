@@ -1,4 +1,4 @@
 [workspace]
-members = ["core", "tank", "server"]
+members = ["core", "tank", "webserver"]
 edition = "2024"
 resolver = "2"

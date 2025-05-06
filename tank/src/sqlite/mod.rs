@@ -12,9 +12,9 @@ pub struct Tank {
 }
 
 impl Tank {
-    pub async fn new(db: &str) -> Result<Self> {
+    pub async fn new(db: impl AsRef<str>) -> Result<Self> {
         Ok(Self {
-            pool: SqlitePool::connect(db).await?,
+            pool: SqlitePool::connect(db.as_ref()).await?,
         })
     }
 
@@ -78,15 +78,15 @@ impl Tank {
 }
 
 // For debugging / testing purposes
-pub async fn init_db(db_file: &str) -> Result<Tank> {
-    if fs::metadata(db_file).is_ok() {
-        fs::remove_file(db_file)?;
+pub async fn init_db(db_file: impl AsRef<str>) -> Result<Tank> {
+    if fs::metadata(db_file.as_ref()).is_ok() {
+        fs::remove_file(db_file.as_ref())?;
     }
 
-    File::create(db_file)?;
+    File::create(db_file.as_ref())?;
 
     // Connect and create tables
-    let tank = Tank::new(&format!("sqlite://{}", db_file)).await?;
+    let tank = Tank::new(&format!("sqlite://{}", db_file.as_ref())).await?;
     tank.create_tables().await?;
 
     Ok(tank)

@@ -8,13 +8,13 @@ use uuid::Uuid;
 use super::Tank;
 
 impl Tank {
-    pub async fn new_list(&self, user_id: &Uuid, label: &str) -> Result<Uuid> {
+    pub async fn new_list(&self, user_id: &Uuid, label: impl AsRef<str>) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         query("INSERT INTO lists (id, user_id, label, deleted_time) VALUES (?, ?, ?, ?)")
             .bind(id.to_string())
             .bind(user_id.to_string())
-            .bind(label)
+            .bind(label.as_ref())
             .bind(0)
             .execute(&self.pool)
             .await?;

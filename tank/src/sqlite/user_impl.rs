@@ -11,13 +11,13 @@ use uuid::Uuid;
 use super::Tank;
 
 impl Tank {
-    pub async fn new_user(&self, nick: &str) -> Result<Uuid> {
+    pub async fn new_user(&self, nick: impl AsRef<str>) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         // Insert the new user
         query("INSERT INTO users (id, nick, token, deleted_time) VALUES (?, ?, ?, ?)")
             .bind(id.to_string())
-            .bind(nick)
+            .bind(nick.as_ref())
             .bind(Uuid::new_v4().to_string())
             .bind(DEFAULT_DELETED_TIME)
             .execute(&self.pool)

@@ -1,8 +1,9 @@
 use axum::{
-    Json,
+    Json, Router,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
     response::IntoResponse,
+    routing::{get, post},
 };
 // use serde::Deserialize;
 use toodeloo_core::user::UpdateUser;
@@ -10,12 +11,24 @@ use toodeloo_tank::sqlite::Tank;
 use tracing::*;
 use uuid::Uuid;
 
+pub fn routes() -> Router<Tank> {
+    Router::new()
+        .route("/", get(get_users))
+        .route(
+        "/{nickname}",
+        post(new_user)
+            .get(get_user)
+            .put(update_user)
+            .delete(remove_user),
+    )
+}
+
 pub async fn new_user(
     State(tank): State<Tank>,
     Path(nickname): Path<String>,
     headers: HeaderMap,
 ) -> impl IntoResponse {
-    debug!("GET USER - User ID: {:?}", nickname);
+    debug!("POST USER - Nick: {:?}", nickname);
 
     let auth_token = match headers.get("bearer") {
         Some(token) => token.to_str().unwrap(),
