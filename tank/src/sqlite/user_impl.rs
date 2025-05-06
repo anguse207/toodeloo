@@ -4,7 +4,6 @@ use toodeloo_core::{
 };
 
 use anyhow::Result;
-use async_trait::async_trait;
 use sqlx::{query, query_as};
 use uuid::Uuid;
 

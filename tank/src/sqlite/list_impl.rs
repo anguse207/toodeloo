@@ -2,7 +2,6 @@ use sqlx::{query, query_as};
 use toodeloo_core::list::List;
 
 use anyhow::Result;
-use async_trait::async_trait;
 use uuid::Uuid;
 
 use super::Tank;

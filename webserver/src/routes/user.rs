@@ -12,9 +12,7 @@ use tracing::*;
 use uuid::Uuid;
 
 pub fn routes() -> Router<Tank> {
-    Router::new()
-        .route("/", get(get_users))
-        .route(
+    Router::new().route("/", get(get_users)).route(
         "/{nickname}",
         post(new_user)
             .get(get_user)

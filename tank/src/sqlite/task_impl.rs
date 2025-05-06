@@ -1,5 +1,4 @@
 use anyhow::Result;
-use async_trait::async_trait;
 use sqlx::{query, query_as};
 use toodeloo_core::{
     DEFAULT_DELETED_TIME, DEFAULT_SNOOZED_UNTIL, task::Task, timing::get_timestamp,
@@ -10,7 +9,12 @@ use super::Tank;
 
 impl Tank {
     // Task
-    pub async fn new_task(&self, list_id: &Uuid, title: impl AsRef<str>, content: impl AsRef<str>) -> Result<Uuid> {
+    pub async fn new_task(
+        &self,
+        list_id: &Uuid,
+        title: impl AsRef<str>,
+        content: impl AsRef<str>,
+    ) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         query("INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")

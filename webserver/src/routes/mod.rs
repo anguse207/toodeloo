@@ -1,7 +1,6 @@
 use axum::{
     Router, middleware,
     response::IntoResponse,
-    routing::{get, post},
 };
 use toodeloo_tank::sqlite::Tank;
 use tower_http::services::ServeDir;

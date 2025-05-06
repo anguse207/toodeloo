@@ -1,9 +1,8 @@
 use axum::{
     Extension,
     extract::{Request, State},
-    http::StatusCode,
     middleware::Next,
-    response::{IntoResponse, Redirect, Response},
+    response::{IntoResponse, Redirect},
 };
 use toodeloo_tank::sqlite::Tank;
 use uuid::Uuid;
@@ -12,7 +11,7 @@ const DEBUG_AUTH: bool = true;
 
 pub async fn auth_middleware(
     State(tank): State<Tank>,
-    mut req: Request,
+    req: Request,
     next: Next,
 ) -> impl IntoResponse {
     if DEBUG_AUTH {

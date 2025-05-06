@@ -18,8 +18,8 @@ async fn main() -> Result<()> {
     // let tank = init_db("testing.db").await?;
 
     let tank = toodeloo_tank::sqlite::init_db("testing.db").await?;
-    
-    let listener = TcpListener::bind("127.0.0.1:4000").await?;
+
+    let listener = TcpListener::bind(":::4000").await?;
     println!("listening on {}", listener.local_addr()?);
 
     let app = create_router(tank).await;
