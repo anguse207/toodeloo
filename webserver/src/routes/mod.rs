@@ -26,8 +26,3 @@ pub async fn create_router(tank: Tank) -> Router {
         // Serve react app
         .fallback_service(ServeDir::new("frontend/dist"))
 }
-
-async fn test_handler() -> impl IntoResponse {
-    info!("Test Handler");
-    "Hello, World!"
-}

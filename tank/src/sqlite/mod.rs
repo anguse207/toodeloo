@@ -25,12 +25,13 @@ impl Tank {
     // Verify with `$ sqlite3 <db_name>.db` `sqlite> .tables`
     pub async fn create_tables(&self) -> Result<()> {
         println!("Creating tables");
+
         sqlx::query(
             r#"
             CREATE TABLE Users (
-                id TEXT PRIMARY KEY,
-                nick TEXT NOT NULL,
-                token TEXT,
+                id TEXT NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL,
+                pass TEXT NOT NULL,
                 deleted_time INTEGER NOT NULL
             )
             "#,
@@ -38,6 +39,21 @@ impl Tank {
         .execute(&self.pool)
         .await?;
         println!("  Created Users Table");
+
+        sqlx::query(
+            r#"
+            CREATE TABLE Tokens (
+                id TEXT NOT NULL PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                expiry INTEGER NOT NULL,
+                revoked BOOLEAN NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES Users(id) 
+            )
+            "#,
+        )
+        .execute(&self.pool)
+        .await?;
+        println!("  Created Tokens Table");
 
         sqlx::query(
             r#"
@@ -101,10 +117,10 @@ mod tests {
         let tank = init_db("testing.db").await.unwrap();
 
         // Create 2 user
-        let john_id = tank.new_user("John Tez").await.unwrap();
+        let john_id = tank.new_user("John Tez", "pizza123").await.unwrap();
         println!("Created user with ID: {}", john_id);
 
-        let frank_id = tank.new_user("Frank Lamps").await.unwrap();
+        let frank_id = tank.new_user("Frank Lamps", "pizza123").await.unwrap();
         println!("Created user with ID: {}", frank_id);
 
         // Get all users

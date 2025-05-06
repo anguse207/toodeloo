@@ -12,34 +12,28 @@ use tracing::*;
 use uuid::Uuid;
 
 pub fn routes() -> Router<Tank> {
-    Router::new().route("/", get(get_users)).route(
+    Router::new().route("/", get(get_all)).route(
         "/{nickname}",
-        post(new_user)
-            .get(get_user)
-            .put(update_user)
+        post(create)
+            .get(get_from_id)
+            .put(update)
             .delete(remove_user),
     )
 }
 
-pub async fn new_user(
+pub async fn create(
     State(tank): State<Tank>,
-    Path(nickname): Path<String>,
-    headers: HeaderMap,
+    Path(name): Path<String>,
+    Path(pass): Path<String>,
 ) -> impl IntoResponse {
-    debug!("POST USER - Nick: {:?}", nickname);
+    debug!("POST USER - Nick: {:?}", name);
 
-    let auth_token = match headers.get("bearer") {
-        Some(token) => token.to_str().unwrap(),
-        None => return (StatusCode::UNAUTHORIZED, Json(None)),
-    };
-    debug!("Auth Token: {:?}", auth_token);
-
-    let user = tank.new_user(&nickname).await.unwrap();
+    let user = tank.new_user(&name, &pass).await.unwrap();
 
     (StatusCode::CREATED, Json(Some(user)))
 }
 
-pub async fn get_user(State(tank): State<Tank>, Path(user_id): Path<String>) -> impl IntoResponse {
+pub async fn get_from_id(State(tank): State<Tank>, Path(user_id): Path<String>) -> impl IntoResponse {
     debug!("GET USER - User ID: {:?}", user_id);
 
     if let Ok(user_id) = user_id.parse::<Uuid>() {
@@ -54,14 +48,14 @@ pub async fn get_user(State(tank): State<Tank>, Path(user_id): Path<String>) -> 
     }
 }
 
-pub async fn get_users(State(tank): State<Tank>) -> impl IntoResponse {
+pub async fn get_all(State(tank): State<Tank>) -> impl IntoResponse {
     debug!("GET USERS");
 
     let users = tank.get_users().await.unwrap();
     Json(users)
 }
 
-pub async fn update_user(
+pub async fn update(
     State(tank): State<Tank>,
     Path(user_id): Path<String>,
     Json(update_user): Json<UpdateUser>,

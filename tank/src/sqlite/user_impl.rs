@@ -10,14 +10,14 @@ use uuid::Uuid;
 use super::Tank;
 
 impl Tank {
-    pub async fn new_user(&self, nick: impl AsRef<str>) -> Result<Uuid> {
+    pub async fn new_user(&self, name: impl AsRef<str>, pass: impl AsRef<str>) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
         // Insert the new user
-        query("INSERT INTO users (id, nick, token, deleted_time) VALUES (?, ?, ?, ?)")
+        query("INSERT INTO users (id, name, pass, deleted_time) VALUES (?, ?, ?, ?)")
             .bind(id.to_string())
-            .bind(nick.as_ref())
-            .bind(Uuid::new_v4().to_string())
+            .bind(name.as_ref())
+            .bind(pass.as_ref())
             .bind(DEFAULT_DELETED_TIME)
             .execute(&self.pool)
             .await?;
@@ -27,7 +27,7 @@ impl Tank {
 
     pub async fn get_user(&self, id: &Uuid) -> Result<User> {
         let user =
-            query_as::<_, User>("SELECT id, nick, token, deleted_time FROM users WHERE id = ?")
+            query_as::<_, User>("SELECT id, name, pass, deleted_time FROM users WHERE id = ?")
                 .bind(id.to_string())
                 .fetch_one(&self.pool)
                 .await?;
@@ -44,10 +44,10 @@ impl Tank {
     }
 
     pub async fn update_user(&self, id: &Uuid, new: &UpdateUser) -> Result<()> {
-        let _ = query("UPDATE users SET nick = ?, deleted_time = ?, token = ? WHERE id = ?")
-            .bind(&new.nick)
+        let _ = query("UPDATE users SET name = ?, pass = ?, deleted_time = ? WHERE id = ?")
+            .bind(&new.name)
+            .bind(&new.pass)
             .bind(new.deleted_time as i64)
-            .bind(new.token)
             .bind(id.to_string())
             .execute(&self.pool)
             .await?;
