@@ -12,10 +12,10 @@ use tracing::*;
 use uuid::Uuid;
 
 pub fn routes() -> Router<Tank> {
-    Router::new().route("/", get(get_all)).route(
+    Router::new().route("/", get(fetch_all)).route(
         "/{nickname}",
         post(create)
-            .get(get_from_id)
+            .get(fetch)
             .put(update)
             .delete(remove_user),
     )
@@ -33,7 +33,7 @@ pub async fn create(
     (StatusCode::CREATED, Json(Some(user)))
 }
 
-pub async fn get_from_id(State(tank): State<Tank>, Path(user_id): Path<String>) -> impl IntoResponse {
+pub async fn fetch(State(tank): State<Tank>, Path(user_id): Path<String>) -> impl IntoResponse {
     debug!("GET USER - User ID: {:?}", user_id);
 
     if let Ok(user_id) = user_id.parse::<Uuid>() {
@@ -48,7 +48,7 @@ pub async fn get_from_id(State(tank): State<Tank>, Path(user_id): Path<String>) 
     }
 }
 
-pub async fn get_all(State(tank): State<Tank>) -> impl IntoResponse {
+pub async fn fetch_all(State(tank): State<Tank>) -> impl IntoResponse {
     debug!("GET USERS");
 
     let users = tank.get_users().await.unwrap();

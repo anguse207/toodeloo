@@ -20,14 +20,14 @@ pub async fn auth_middleware(
     next: Next,
 ) -> impl IntoResponse {
     if DEBUG_AUTH {
-        println!("Auth Middleware Bypass");
+        println!("Auth Middleware Bypass for {}", req.uri().path());
         return next.run(req).await;
     }
 
     // Extract the authorization header
     let auth_token = match req.headers().get("Bearer") {
         Some(token) => token.to_str().unwrap(),
-        None => return Redirect::permanent("/login").into_response(),
+        None => return Redirect::temporary("/login").into_response(),
     };
 
     // look up the user ID from the token

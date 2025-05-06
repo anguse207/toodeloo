@@ -8,7 +8,7 @@ use std::fs::{self, File};
 
 #[derive(Debug, Clone)]
 pub struct Tank {
-    pool: SqlitePool,
+    pub pool: SqlitePool,
 }
 
 impl Tank {

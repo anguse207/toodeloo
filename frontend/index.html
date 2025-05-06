@@ -4,48 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>toode-loo</title>
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico" /> -->
     <link rel="stylesheet" href="styles/styles.css" />
-    <link rel="stylesheet" href="styles/animations.css" />
-    <link rel="stylesheet" href="styles/tasks.css" />
-    <link rel="stylesheet" href="styles/header.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.bubble.css"
-    />
   </head>
   <body>
-    <div class="header" id="header">
-      <a href="https://github.com/anguse207/toodeloo" style="text-decoration: none; color: inherit;">
-        <h1>toode-loo</h1>
-      </a>
-        <div class="header-select">
-        <select id="header-select">
-          <option id="44296c24-a093-4b09-92cf-77c9caeb510a">
-            Implementation Progress
-          </option>
-          <option id="16c42134-2316-4070-a907-9766f63a570f">
-            Weekend Jobs
-          </option>
-          <option id="38d2dccb-a282-4755-82f9-48c57e1149d7">
-            Shopping
-          </option>
-        </select>
-        <button class="new">+ List</button>
-        <button class="new">+ Task</button>
-      </div>
-      <button class="sign-in">Sign In</button>
-    </div>
-    <div id="tasks-container"></div>
-    <div id="extra-scroll"></div>
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <header>
+      <h1>toodeloo</h1>
+    </header>
+
+    <h2>User</h2>
+    <input type="text" id="user-name" placeholder="username..." />
+    <input type="text" id="user-pass" placeholder="password..." />
+    <button>Create</button>
+    <button>Login</button>
+    <button>Logout</button>
+    <h3>User ID</h3>
+    <div id="user-id-mnt"></div>
+    <h3>Auth Token</h3>
+    <div id="user-token-mnt"></div>
+
+    <h2>Lists</h2>
+    <input type="text" id="list-name" placeholder="name..." />
+    <button>Create</button>
+    <h3>Lists details</h3>
+    <div id="list-details-mnt"></div>
+
+    <h2>Tasks</h2>
+    <input type="text" id="task-title" placeholder="title..." />
+    <input type="text" id="task-content" placeholder="content..." />
+    <button>Create</button>
+    <h3>Task details</h3>
+    <div id="task-details-mnt"></div>
+
     <script src="scripts/main.js"></script>
-    <script src="scripts/list.js"></script>
-    <script src="scripts/task.js"></script>
-    <script src="scripts/cookies.js"></script>
   </body>
 </html>

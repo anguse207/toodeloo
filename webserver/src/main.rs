@@ -19,14 +19,14 @@ async fn main() -> Result<()> {
 
     let tank = toodeloo_tank::sqlite::init_db("testing.db").await?;
 
-    let listener = TcpListener::bind(":::4000").await?;
+    let listener = TcpListener::bind(":::1337").await?;
     println!("listening on {}", listener.local_addr()?);
 
     let app = create_router(tank).await;
 
     tokio::spawn(async {
         axum::serve(listener, app).await.unwrap();
-    })
+        4000  })
     .await?;
 
     Ok(())
