@@ -13,6 +13,16 @@ impl Tank {
     pub async fn new_user(&self, name: impl AsRef<str>, pass: impl AsRef<str>) -> Result<Uuid> {
         let id = Uuid::new_v4();
 
+        // Check if the user already exists
+        let existing_user = query("SELECT id FROM users WHERE name = ?")
+            .bind(name.as_ref())
+            .fetch_optional(&self.pool)
+            .await?;
+
+        if existing_user.is_some() {
+            return Err(anyhow::anyhow!("User already exists"));
+        }
+
         // Insert the new user
         query("INSERT INTO users (id, name, pass, deleted_time) VALUES (?, ?, ?, ?)")
             .bind(id.to_string())

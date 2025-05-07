@@ -3,6 +3,7 @@ use uuid::Uuid;
 
 use crate::timing::{self, get_timestamp};
 
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct Token {
     pub id: Uuid,
     pub user_id: Uuid,
@@ -11,8 +12,8 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(user_id: impl Into<Uuid>, duration_seconds: u64) -> Self {
-        let expiry = get_timestamp() + duration_seconds;
+    pub fn new(user_id: impl Into<Uuid>, duration: core::time::Duration) -> Self {
+        let expiry = get_timestamp() + duration.as_secs();
         Self {
             id: Uuid::new_v4(),
             user_id: user_id.into(),
