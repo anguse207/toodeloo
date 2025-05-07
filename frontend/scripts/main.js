@@ -1,34 +1,32 @@
-// const host = window.location.origin + /;
-const host = "file:///home/gus/repos/toodeloo/frontend";
-var userToken = "1234";
+const host = window.location.origin;
+console.log(host);
 
-async function pulseContainer(element) {
-  element.classList.add("pulse-text");
-  setTimeout(() => {
-    element.classList.remove("pulse-text");
-  }, 400);
+// POST request, include the 
+
+async function createUser() {
+  var path = host + "/users";
+  console.log("Creating user + ", path);
+  // Get the username and password from the input fields
+  const username = document.getElementById("user-name").value;
+  const password = document.getElementById("user-pass").value;
+
+  try {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Username": username,
+        "Password": password,
+      },
+      body: JSON.stringify({}), // Add a body if needed
+    });
+
+    if (response.ok) {
+      window.alert("User created successfully!");
+    } else {
+      window.alert("Failed to create user:", response.statusText);
+    }
+  } catch (error) {
+    window.alert("Error creating user:", error);
+  }
 }
-
-let lastScrollY = 0;
-const header = document.getElementById("header");
-
-window.addEventListener("scroll", () => {
-  if (window.scrollY > lastScrollY) {
-    header.classList.add("hidden");
-  } else {
-    header.classList.remove("hidden");
-  }
-  lastScrollY = window.scrollY;
-});
-
-// For dev purposes
-document.addEventListener("DOMContentLoaded", function() {
-  // clearCookies();
-  setAuthToken(userToken);
-
-  // Load the last list
-  var lastListId = getCookie("last_list");
-  if (lastListId) {
-    loadList(lastListId);
-  }
-});

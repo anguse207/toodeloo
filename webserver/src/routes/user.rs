@@ -12,20 +12,30 @@ use tracing::*;
 use uuid::Uuid;
 
 pub fn routes() -> Router<Tank> {
-    Router::new().route("/", get(fetch_all)).route(
-        "/{nickname}",
+    Router::new()
+        // .route("/", get(fetch_all))
+        .route(
+        "/",
         post(create)
             .get(fetch)
             .put(update)
             .delete(remove_user),
     )
 }
-
-pub async fn create(
+async fn create(
     State(tank): State<Tank>,
-    Path(name): Path<String>,
-    Path(pass): Path<String>,
+    headers: HeaderMap,
 ) -> impl IntoResponse {
+    let name = headers
+        .get("Username")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("default");
+
+    let pass = headers
+        .get("Password")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("default");
+
     debug!("POST USER - Nick: {:?}", name);
 
     let user = tank.new_user(&name, &pass).await.unwrap();
@@ -33,19 +43,25 @@ pub async fn create(
     (StatusCode::CREATED, Json(Some(user)))
 }
 
-pub async fn fetch(State(tank): State<Tank>, Path(user_id): Path<String>) -> impl IntoResponse {
-    debug!("GET USER - User ID: {:?}", user_id);
+async fn login() {
+    debug!("POST USER - Login");
 
-    if let Ok(user_id) = user_id.parse::<Uuid>() {
-        let user = tank.get_user(&user_id).await;
+    // tank.login_user(&user_id.parse().unwrap()).await.unwrap()
+}
 
-        match user {
-            Ok(user) => (StatusCode::OK, Json(Some(user))),
-            Err(_) => (StatusCode::NOT_FOUND, Json(None)),
-        }
-    } else {
-        (StatusCode::BAD_REQUEST, Json(None))
-    }
+pub async fn fetch(State(tank): State<Tank>) -> impl IntoResponse {
+    debug!("GET USER - User ID: {:?}", 0);
+
+    // if let Ok(user_id) = user_id.parse::<Uuid>() {
+    //     let user = tank.get_user(&user_id).await;
+
+    //     match user {
+    //         Ok(user) => (StatusCode::OK, Json(Some(user))),
+    //         Err(_) => (StatusCode::NOT_FOUND, Json(None)),
+    //     }
+    // } else {
+    //     (StatusCode::BAD_REQUEST, Json(None))
+    // }
 }
 
 pub async fn fetch_all(State(tank): State<Tank>) -> impl IntoResponse {
@@ -57,24 +73,23 @@ pub async fn fetch_all(State(tank): State<Tank>) -> impl IntoResponse {
 
 pub async fn update(
     State(tank): State<Tank>,
-    Path(user_id): Path<String>,
+    // Path(user_id): Path<String>,
     Json(update_user): Json<UpdateUser>,
 ) -> impl IntoResponse {
     debug!(
         "PUT USER - User ID: {:?}, UpdateUser: {:?}",
-        user_id, update_user
+        0, update_user
     );
 
-    tank.update_user(&user_id.parse().unwrap(), &update_user)
-        .await
-        .unwrap()
+    // tank.update_user(.parse().unwrap(), &update_user)
+    //     .await
+    //     .unwrap()
 }
 
 pub async fn remove_user(
     State(tank): State<Tank>,
-    Path(user_id): Path<String>,
 ) -> impl IntoResponse {
-    debug!("DELETE USER - User ID: {:?}", user_id);
+    debug!("DELETE USER - User ID: {:?}", 0);
 
-    tank.remove_user(&user_id.parse().unwrap()).await.unwrap()
+    // tank.remove_user(&user_id.parse().unwrap()).await.unwrap()
 }
