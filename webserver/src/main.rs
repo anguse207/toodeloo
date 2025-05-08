@@ -16,7 +16,8 @@ async fn main() -> Result<()> {
     info!("Starting Logging...");
 
     let tank =
-        toodeloo_tank::pg::Tank::new("postgres://toodaloo:password@localhost:5432/development_db");
+        toodeloo_tank::pg::Tank::new("postgres://toodaloo:password@localhost:5432/development_db")
+            .await;
 
     let listener = TcpListener::bind(":::1337").await?;
     println!("listening on {}", listener.local_addr()?);

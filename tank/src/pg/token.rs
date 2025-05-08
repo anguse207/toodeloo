@@ -32,19 +32,19 @@ impl Tank {
         }
     }
 
-    pub async fn read_token(&self, user_id: Uuid) -> Result<Token> {
+    pub async fn read_tokens_from_user_id(&self, user_id: Uuid) -> Result<Vec<Token>> {
         let query = sqlx::query_as!(
             Token,
             "SELECT id, user_id, expiry, revoked FROM tokens WHERE user_id = $1",
             user_id
         )
-        .fetch_one(&self.pool)
+        .fetch_all(&self.pool)
         .await?;
 
         Ok(query)
     }
 
-    pub async fn read_user_id_from_token(&self, id: Uuid) -> Result<Uuid> {
+    pub async fn read_token(&self, id: Uuid) -> Result<Token> {
         let query = sqlx::query_as!(
             Token,
             "SELECT id, user_id, expiry, revoked FROM tokens WHERE id = $1",
@@ -53,7 +53,7 @@ impl Tank {
         .fetch_one(&self.pool)
         .await?;
 
-        Ok(query.id)
+        Ok(query)
     }
 
     pub async fn update_token(&self, token: &Token) -> Result<Token> {
