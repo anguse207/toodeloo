@@ -19,12 +19,12 @@ rm -f <static_db_path>
 touch <static_db_path>
 ```
 
-### Run the migration
+### Run the migration and create query data
 
-sqlx migrate run --source migrations
-
-cargo sqlx prepare
-
-set DATABASE_URL postgres://toodaloo:password@localhost:5432/development_db
+```bash
+# Create the database
 sqlx migrate run --source migrations --database-url postgres://toodaloo:password@localhost:5432/development_db
-cargo sqlx prepare --database-url postgres://toodaloo:password@localhost:5432/development_db
+
+# Generate the query data
+cargo sqlx prepare --database-url postgres://toodaloo:password@localhost:5432/development_db --workspace
+```
