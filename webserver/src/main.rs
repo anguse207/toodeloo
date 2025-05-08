@@ -11,7 +11,7 @@ use tracing::info;
 async fn main() -> Result<()> {
     // setup tracing
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG) // Set max level to DEBUG
+        .with_max_level(tracing::Level::INFO) // Set max level to DEBUG
         .init();
     info!("Starting Logging...");
 

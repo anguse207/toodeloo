@@ -13,16 +13,15 @@ pub async fn auth_middleware(
     mut req: Request,
     next: Next,
 ) -> impl IntoResponse {
-    const ALLOWED_PATHS: [&str; 4] = [
+    // List of allowed paths that do not require authentication
+    const ALLOWED_PATHS: [&str; 2] = [
         "/users/create",
         "/users/login",
-        "/users/logout",
-        "/users/test",
     ];
 
     // Check if the request path is in the allowed paths
     if ALLOWED_PATHS.iter().any(|&path| req.uri().path() == path) {
-        println!("Auth Middleware Bypass for {}", req.uri().path());
+        debug!("Auth Middleware Bypass for {}", req.uri().path());
         return next.run(req).await;
     }
 
@@ -33,7 +32,7 @@ pub async fn auth_middleware(
                 .read_token(auth_token.parse().unwrap_or_default())
                 .await
             {
-                println!("User ID: {:?}", token);
+                debug!("User ID: {:?}", token);
                 req.extensions_mut().insert(token);
                 return next.run(req).await;
             }

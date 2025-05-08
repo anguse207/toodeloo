@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::timing::get_timestamp;
 
-#[derive(Debug, PartialEq, FromRow)]
+#[derive(Debug, PartialEq, FromRow, Serialize)]
 pub struct Task {
     pub id: Uuid,
     pub list_id: Uuid,

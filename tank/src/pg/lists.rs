@@ -41,6 +41,18 @@ impl Tank {
         Ok(query)
     }
 
+    pub async fn read_lists_from_user_id(&self, user_id: Uuid) -> Result<Vec<List>> {
+        let query = sqlx::query_as!(
+            List,
+            "SELECT id, user_id, label, deleted_time FROM lists WHERE user_id = $1",
+            user_id
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(query)
+    }
+
     pub async fn update_list(&self, list: &List) -> Result<List> {
         let updated_list = sqlx::query_as!(
             List,

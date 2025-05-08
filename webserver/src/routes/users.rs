@@ -18,7 +18,7 @@ pub fn routes() -> Router<Tank> {
 async fn create(
     State(tank): State<Tank>,
     headers: HeaderMap,
-) -> impl IntoResponse {
+) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
     let name = headers
         .get("Username")
         .and_then(|v| v.to_str().ok())
@@ -33,7 +33,7 @@ async fn create(
 
     return match tank.create_user(name, pass).await {
         Ok(user_id) => Ok(Json(user_id)),
-        Err(_) => Err(StatusCode::CONFLICT),
+        Err(_) => Err((StatusCode::CONFLICT, "User creation failed")),
     };
 }
 
@@ -65,7 +65,7 @@ async fn login(
     }
 
     // Generate token
-    let token = tank.create_token(user.id, Duration::from_secs(30)).await.unwrap();
-
+    let token_id = tank.create_token(user.id, Duration::from_secs(30)).await.unwrap();
+    let token = tank.read_token(token_id).await.unwrap();
     Ok(Json(token))
 }
