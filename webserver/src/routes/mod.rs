@@ -13,9 +13,9 @@ mod users;
 pub async fn create_router(tank: Tank) -> Router {
     Router::new()
         // Users
-        .nest("/users", users::routes())
-        .nest("/lists", lists::routes())
-        .nest("/tasks", tasks::routes())
+        .nest("/api/users", users::routes())
+        .nest("/api/lists", lists::routes())
+        .nest("/api/tasks", tasks::routes())
         // Lists
         // Tasks
         // State

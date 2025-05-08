@@ -1,4 +1,4 @@
-const host = window.location.origin;
+const host = window.location.origin + "/api";
 console.log(host);
 
 var user_id = null;

@@ -15,8 +15,8 @@ pub async fn auth_middleware(
 ) -> impl IntoResponse {
     // List of allowed paths that do not require authentication
     const ALLOWED_PATHS: [&str; 2] = [
-        "/users/create",
-        "/users/login",
+        "/api/users/create",
+        "/api/users/login",
     ];
 
     // Check if the request path is in the allowed paths
