@@ -1,148 +1,299 @@
-Here’s a simple API specification for a Todo app with users, lists, and tasks. The API uses tokens for authentication, which are tied to a user.
+# Toodeloo API Documentation
+
+## Base URL
+```
+http://localhost:4000
+```
 
 ---
 
-## **API Specification**
-
-### **Authentication**
-- **Token-based authentication**: Users must include a valid token in the `Authorization` header for protected routes.
+## Authentication
+- **Authentication**: The API uses tokens for authentication. Tokens are issued upon successful login and must be included in the `Authorization` header for protected routes.
+- **Header Format**: 
+  ```
+  Authorization: Bearer <token>
+  ```
 
 ---
 
-### **Endpoints**
+## Endpoints
 
-#### **1. Users**
-##### **POST /users**
-- **Description**: Create a new user.
+### 1. **Users**
+Endpoints for managing users.
+
+#### **POST /users/create**
+Create a new user.
+
 - **Headers**:
-  - `Username`: The username of the user.
-  - `Password`: The password of the user.
+  - `Username`: The username of the new user.
+  - `Password`: The password of the new user.
+
 - **Response**:
   - `201 Created`: User created successfully.
-  - `409 Conflict`: User already exists.
+  - `409 Conflict`: Username already exists.
 
-##### **POST /users/login**
-- **Description**: Log in a user and return an authentication token.
+- **Example**:
+  ```bash
+  curl -X POST http://localhost:4000/users/create \
+       -H "Username: JohnDoe" \
+       -H "Password: password123"
+  ```
+
+---
+
+#### **POST /users/login**
+Log in a user and retrieve a token.
+
 - **Headers**:
   - `Username`: The username of the user.
   - `Password`: The password of the user.
+
 - **Response**:
   - `200 OK`: Returns a JSON object with the token.
-  - `401 Unauthorized`: Invalid username or password.
+  - `401 Unauthorized`: Incorrect password.
+  - `409 Conflict`: User does not exist.
 
-##### **GET /users**
-- **Description**: Fetch all users (admin-only route).
-- **Headers**:
-  - `Authorization`: Bearer token.
-- **Response**:
-  - `200 OK`: Returns a list of users.
-  - `403 Forbidden`: Unauthorized access.
+- **Example**:
+  ```bash
+  curl -X POST http://localhost:4000/users/login \
+       -H "Username: JohnDoe" \
+       -H "Password: password123"
+  ```
 
 ---
 
-#### **2. Lists**
-##### **POST /lists**
-- **Description**: Create a new list.
-- **Headers**:
-  - `Authorization`: Bearer token.
+#### **GET /users**
+Fetch all users.
+
+- **Response**:
+  - `200 OK`: Returns a JSON array of users.
+
+- **Example**:
+  ```bash
+  curl -X GET http://localhost:4000/users
+  ```
+
+---
+
+#### **PUT /users/update**
+Update a user's information.
+
 - **Body**:
   ```json
   {
-    "name": "Shopping List"
+    "name": "NewName",
+    "pass": "NewPassword"
   }
   ```
+
+- **Response**:
+  - `200 OK`: User updated successfully.
+  - `404 Not Found`: User not found.
+
+- **Example**:
+  ```bash
+  curl -X PUT http://localhost:4000/users/update \
+       -H "Content-Type: application/json" \
+       -d '{"name": "NewName", "pass": "NewPassword"}'
+  ```
+
+---
+
+#### **DELETE /users/remove**
+Delete a user.
+
+- **Response**:
+  - `200 OK`: User deleted successfully.
+  - `404 Not Found`: User not found.
+
+- **Example**:
+  ```bash
+  curl -X DELETE http://localhost:4000/users/remove
+  ```
+
+---
+
+### 2. **Tokens**
+Endpoints for managing tokens.
+
+#### **POST /tokens/refresh**
+Refresh an expired token.
+
+- **Headers**:
+  - `Authorization`: Bearer token.
+
+- **Response**:
+  - `200 OK`: Returns a new token.
+  - `401 Unauthorized`: Invalid or expired token.
+
+- **Example**:
+  ```bash
+  curl -X POST http://localhost:4000/tokens/refresh \
+       -H "Authorization: Bearer <token>"
+  ```
+
+---
+
+### 3. **Lists**
+Endpoints for managing lists.
+
+#### **POST /lists/create**
+Create a new list.
+
+- **Body**:
+  ```json
+  {
+    "label": "Groceries"
+  }
+  ```
+
 - **Response**:
   - `201 Created`: List created successfully.
-  - `400 Bad Request`: Invalid input.
 
-##### **GET /lists**
-- **Description**: Fetch all lists for the authenticated user.
-- **Headers**:
-  - `Authorization`: Bearer token.
-- **Response**:
-  - `200 OK`: Returns a list of lists.
-
-##### **DELETE /lists/{list_id}**
-- **Description**: Delete a specific list.
-- **Headers**:
-  - `Authorization`: Bearer token.
-- **Response**:
-  - `204 No Content`: List deleted successfully.
-  - `404 Not Found`: List not found.
+- **Example**:
+  ```bash
+  curl -X POST http://localhost:4000/lists/create \
+       -H "Content-Type: application/json" \
+       -d '{"label": "Groceries"}'
+  ```
 
 ---
 
-#### **3. Tasks**
-##### **POST /lists/{list_id}/tasks**
-- **Description**: Create a new task in a specific list.
-- **Headers**:
-  - `Authorization`: Bearer token.
+#### **GET /lists**
+Fetch all lists for the authenticated user.
+
+- **Response**:
+  - `200 OK`: Returns a JSON array of lists.
+
+- **Example**:
+  ```bash
+  curl -X GET http://localhost:4000/lists \
+       -H "Authorization: Bearer <token>"
+  ```
+
+---
+
+#### **PUT /lists/update/:id**
+Update a list.
+
 - **Body**:
   ```json
   {
-    "title": "Buy milk",
-    "description": "Get 2 liters of milk",
-    "due_date": "2025-05-10"
+    "label": "Updated Label"
   }
   ```
+
+- **Response**:
+  - `200 OK`: List updated successfully.
+  - `404 Not Found`: List not found.
+
+- **Example**:
+  ```bash
+  curl -X PUT http://localhost:4000/lists/update/<list_id> \
+       -H "Content-Type: application/json" \
+       -d '{"label": "Updated Label"}'
+  ```
+
+---
+
+#### **DELETE /lists/remove/:id**
+Delete a list.
+
+- **Response**:
+  - `200 OK`: List deleted successfully.
+  - `404 Not Found`: List not found.
+
+- **Example**:
+  ```bash
+  curl -X DELETE http://localhost:4000/lists/remove/<list_id>
+  ```
+
+---
+
+### 4. **Tasks**
+Endpoints for managing tasks.
+
+#### **POST /tasks/create**
+Create a new task.
+
+- **Body**:
+  ```json
+  {
+    "list_id": "<list_id>",
+    "title": "Buy Milk",
+    "content": "Get milk from the store",
+    "done": false
+  }
+  ```
+
 - **Response**:
   - `201 Created`: Task created successfully.
-  - `400 Bad Request`: Invalid input.
 
-##### **GET /lists/{list_id}/tasks**
-- **Description**: Fetch all tasks in a specific list.
-- **Headers**:
-  - `Authorization`: Bearer token.
+- **Example**:
+  ```bash
+  curl -X POST http://localhost:4000/tasks/create \
+       -H "Content-Type: application/json" \
+       -d '{"list_id": "<list_id>", "title": "Buy Milk", "content": "Get milk from the store", "done": false}'
+  ```
+
+---
+
+#### **GET /tasks/:list_id**
+Fetch all tasks for a specific list.
+
 - **Response**:
-  - `200 OK`: Returns a list of tasks.
+  - `200 OK`: Returns a JSON array of tasks.
 
-##### **PUT /lists/{list_id}/tasks/{task_id}**
-- **Description**: Update a specific task.
-- **Headers**:
-  - `Authorization`: Bearer token.
+- **Example**:
+  ```bash
+  curl -X GET http://localhost:4000/tasks/<list_id>
+  ```
+
+---
+
+#### **PUT /tasks/update/:id**
+Update a task.
+
 - **Body**:
   ```json
   {
-    "title": "Buy almond milk",
-    "description": "Get 2 liters of almond milk",
-    "due_date": "2025-05-12",
-    "completed": true
+    "title": "Updated Title",
+    "content": "Updated Content",
+    "done": true
   }
   ```
+
 - **Response**:
   - `200 OK`: Task updated successfully.
   - `404 Not Found`: Task not found.
 
-##### **DELETE /lists/{list_id}/tasks/{task_id}**
-- **Description**: Delete a specific task.
-- **Headers**:
-  - `Authorization`: Bearer token.
-- **Response**:
-  - `204 No Content`: Task deleted successfully.
-  - `404 Not Found`: Task not found.
-
----
-
-### **Authentication Token**
-- Tokens are issued upon successful login and are tied to a user.
-- Tokens expire after 24 hours.
-- Example token format:
-  ```json
-  {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "expiry": "2025-05-08T12:00:00Z"
-  }
+- **Example**:
+  ```bash
+  curl -X PUT http://localhost:4000/tasks/update/<task_id> \
+       -H "Content-Type: application/json" \
+       -d '{"title": "Updated Title", "content": "Updated Content", "done": true}'
   ```
 
 ---
 
-### **Error Responses**
-- `400 Bad Request`: Invalid input or missing required fields.
-- `401 Unauthorized`: Invalid or missing token.
-- `403 Forbidden`: Access denied.
-- `404 Not Found`: Resource not found.
-- `500 Internal Server Error`: Unexpected server error.
+#### **DELETE /tasks/remove/:id**
+Delete a task.
+
+- **Response**:
+  - `200 OK`: Task deleted successfully.
+  - `404 Not Found`: Task not found.
+
+- **Example**:
+  ```bash
+  curl -X DELETE http://localhost:4000/tasks/remove/<task_id>
+  ```
 
 ---
 
-This spec provides a clear structure for managing users, lists, and tasks while ensuring secure access through token-based authentication.
+## Error Codes
+- `200 OK`: Request succeeded.
+- `201 Created`: Resource created successfully.
+- `400 Bad Request`: Invalid request data.
+- `401 Unauthorized`: Authentication failed.
+- `404 Not Found`: Resource not found.
+- `409 Conflict`: Resource already exists.

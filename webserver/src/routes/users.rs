@@ -1,11 +1,7 @@
 use std::time::Duration;
 
 use axum::{
-    Json, Router,
-    extract::{Path, State},
-    http::{HeaderMap, StatusCode},
-    response::IntoResponse,
-    routing::{get, post},
+    extract::{Path, State}, http::{HeaderMap, StatusCode}, response::IntoResponse, routing::*, Json, Router
 };
 use sqlx::{query, query_as};
 // use serde::Deserialize;
@@ -14,17 +10,17 @@ use toodeloo_tank::sqlite::Tank;
 use tracing::*;
 use uuid::Uuid;
 
+use super::todo_route;
+
 pub fn routes() -> Router<Tank> {
     Router::new()
-        // .route("/", get(fetch_all))
-        .route(
-        "/",
-        post(create)
-            .get(fetch)
-            .put(update)
-            .delete(remove_user),
-    )
+        .route("/create", post(create))
+        .route("/login", post(login))
+        .route("/",get(todo_route))
+        .route("/update",put(todo_route))
+        .route("/delete",delete(todo_route))
 }
+
 async fn create(
     State(tank): State<Tank>,
     headers: HeaderMap,

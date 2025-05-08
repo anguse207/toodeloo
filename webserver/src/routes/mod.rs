@@ -8,12 +8,14 @@ use tracing::info;
 
 use crate::auth::auth_middleware;
 
-mod user;
+mod users;
+mod lists;
+mod tasks;
 
 pub async fn create_router(tank: Tank) -> Router {
     Router::new()
         // Users
-        .nest("/users", user::routes())
+        .nest("/users", users::routes())
         // Lists
         // Tasks
         // State
@@ -25,4 +27,8 @@ pub async fn create_router(tank: Tank) -> Router {
         ))
         // Serve react app
         .fallback_service(ServeDir::new("frontend"))
+}
+
+pub async fn todo_route() {
+    info!("Todo route");
 }
