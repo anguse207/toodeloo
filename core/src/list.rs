@@ -2,7 +2,7 @@ use serde::Serialize;
 use sqlx::FromRow;
 use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Serialize, FromRow)]
+#[derive(Debug, PartialEq, FromRow)]
 pub struct List {
     pub id: Uuid,
     pub user_id: Uuid,

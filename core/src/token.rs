@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::timing::get_timestamp;
 
-#[derive(Debug, Clone, serde::Serialize, FromRow)]
+#[derive(Debug, Clone, FromRow)]
 pub struct Token {
     pub id: Uuid,
     pub user_id: Uuid,

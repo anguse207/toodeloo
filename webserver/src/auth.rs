@@ -6,14 +6,22 @@ use axum::{
 };
 use toodeloo_core::token::Token;
 use toodeloo_tank::pg::Tank;
+use tracing::*;
 
 pub async fn auth_middleware(
     State(tank): State<Tank>,
     mut req: Request,
     next: Next,
 ) -> impl IntoResponse {
-    // Bypass middleware for the login page
-    if req.uri().path() == "/users/login" {
+    const ALLOWED_PATHS: [&str; 4] = [
+        "/users/create",
+        "/users/login",
+        "/users/logout",
+        "/users/test",
+    ];
+
+    // Check if the request path is in the allowed paths
+    if ALLOWED_PATHS.iter().any(|&path| req.uri().path() == path) {
         println!("Auth Middleware Bypass for {}", req.uri().path());
         return next.run(req).await;
     }
@@ -33,7 +41,7 @@ pub async fn auth_middleware(
     }
 
     // Redirect to login if token is missing or invalid
-    println!("Invalid or missing token");
+    debug!("Invalid or missing token");
     Redirect::permanent("/login").into_response()
 }
 

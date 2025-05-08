@@ -18,7 +18,6 @@ async function createUser() {
         "Username": username,
         "Password": password,
       },
-      body: JSON.stringify({}), // Add a body if needed
     });
 
     if (response.ok) {
@@ -46,15 +45,16 @@ async function loginUser() {
         "Username": username,
         "Password": password,
       },
-      body: JSON.stringify({}), // Add a body if needed
     });
 
     if (response.ok) {
-      window.alert("User created successfully!");
+      window.alert("Login successfully!");
+      const data = await response.json();
+      console.log("Login data:", data);
     } else {
-      window.alert("Failed to create user:", response.statusText);
+      window.alert("Failed to Login:", response.statusText);
     }
   } catch (error) {
-    window.alert("Error creating user:", error);
+    window.alert("Login error:", error);
   }
 }
