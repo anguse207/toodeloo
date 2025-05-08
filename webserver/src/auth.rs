@@ -11,7 +11,7 @@ const DEBUG_AUTH: bool = true;
 
 pub async fn auth_middleware(
     State(tank): State<Tank>,
-    req: Request,
+    mut req: Request,
     next: Next,
 ) -> impl IntoResponse {
     if DEBUG_AUTH {
@@ -26,20 +26,20 @@ pub async fn auth_middleware(
     };
 
     // look up the user ID from the token
-    // match tank.get_user_from_token(auth_token) {
-    //     Ok(user_id) => {
-    //         println!("User ID: {:?}", user_id);
-    //         req.extensions_mut().insert(user_id);
-    //     }
-    //     Err(_) => {
-    //         println!("Invalid token");
-    //         return Redirect::permanent("/login").into_response();
-    //     }
-    // }
+    match tank.read_user_id_from_token(auth_token.parse().unwrap_or_default()).await {
+        Ok(user_id) => {
+            println!("User ID: {:?}", user_id);
+            req.extensions_mut().insert(user_id);
+        }
+        Err(_) => {
+            println!("Invalid token");
+            return Redirect::permanent("/login").into_response();
+        }
+    }
 
     next.run(req).await
 }
 
-async fn handler(Extension(user_id): Extension<Uuid>) -> impl IntoResponse {
+async fn _auth_test_handler(Extension(user_id): Extension<Uuid>) -> impl IntoResponse {
     format!("User ID: {}", user_id)
 }
