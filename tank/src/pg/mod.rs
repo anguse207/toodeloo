@@ -1,7 +1,7 @@
-pub mod users;
 pub mod lists;
-mod token;
 pub mod tasks;
+mod token;
+pub mod users;
 
 use sqlx::PgPool;
 

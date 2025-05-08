@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use anyhow::Result;
-use toodeloo_core::{list::List, token::Token};
+use toodeloo_core::token::Token;
 use uuid::Uuid;
 
 use super::Tank;

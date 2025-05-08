@@ -1,5 +1,5 @@
 use anyhow::Result;
-use toodeloo_core::{list::List};
+use toodeloo_core::list::List;
 use uuid::Uuid;
 
 use super::Tank;

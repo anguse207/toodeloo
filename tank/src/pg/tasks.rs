@@ -1,11 +1,16 @@
 use anyhow::Result;
-use toodeloo_core::{task::Task};
+use toodeloo_core::task::Task;
 use uuid::Uuid;
 
 use super::Tank;
 
 impl Tank {
-    pub async fn create_task(&self, list_id: Uuid, title: impl Into<String>, content: impl Into<String>) -> Result<Uuid> {
+    pub async fn create_task(
+        &self,
+        list_id: Uuid,
+        title: impl Into<String>,
+        content: impl Into<String>,
+    ) -> Result<Uuid> {
         let task = Task::new(list_id, title.into(), content.into());
         let query = sqlx::query!(
             "INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
