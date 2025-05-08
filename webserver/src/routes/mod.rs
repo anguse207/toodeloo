@@ -2,6 +2,7 @@ use axum::{Router, middleware};
 use toodeloo_tank::pg::Tank;
 use tower_http::services::ServeDir;
 use tracing::*;
+use uuid::Uuid;
 
 use crate::auth::auth_middleware;
 
@@ -30,4 +31,8 @@ pub async fn create_router(tank: Tank) -> Router {
 
 pub async fn todo_route() {
     error!("!! HIT TODO ROUTE !!");
+}
+
+pub struct UuidWrapper {
+    pub id: Uuid,
 }

@@ -34,7 +34,10 @@
     <h2>Tasks</h2>
     <input type="text" id="task-title" placeholder="title..." />
     <input type="text" id="task-content" placeholder="content..." />
-    <button>Create</button>
+    <button onclick="createTask()">Create</button>
+    <select id="task-select">
+      <option value="">Select a task</option>
+    </select>
     <h3>Task details</h3>
     <div id="task-details-mnt"></div>
 

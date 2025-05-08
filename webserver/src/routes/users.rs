@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use axum::{extract::State, http::{HeaderMap, StatusCode}, response::IntoResponse, routing::*, Json, Router};
+use serde::Deserialize;
 use toodeloo_tank::pg::Tank;
 use tracing::*;
 
@@ -15,23 +16,19 @@ pub fn routes() -> Router<Tank> {
         .route("/delete", delete(todo_route))
 }
 
+#[derive(Deserialize)]
+struct Credentials {
+    username: String,
+    password: String,
+}
+
 async fn create(
     State(tank): State<Tank>,
-    headers: HeaderMap,
+    Json(Credentials { username, password }): Json<Credentials>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
-    let name = headers
-        .get("Username")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("default");
+    debug!("Create user - username: {:?}", username);
 
-    let pass = headers
-        .get("Password")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("default");
-
-    debug!("Create user - username: {:?}", name);
-
-    return match tank.create_user(name, pass).await {
+    return match tank.create_user(username, password).await {
         Ok(user_id) => Ok(Json(user_id)),
         Err(_) => Err((StatusCode::CONFLICT, "User creation failed")),
     };
@@ -39,28 +36,18 @@ async fn create(
 
 async fn login(
     State(tank): State<Tank>,
-    headers: HeaderMap,
+    Json(Credentials { username, password }): Json<Credentials>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
-    let name = headers
-        .get("Username")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("default");
-
-    let pass = headers
-        .get("Password")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("default");
-
-    debug!("Login user - username: {:?}", name);
+    debug!("Login user - username: {:?}", username);
 
     // Check if the user already exists
-    let user = match tank.read_user_by_name(name).await {
+    let user = match tank.read_user_by_name(username).await {
         Ok(user) => user,
         Err(_) => return Err((StatusCode::NOT_FOUND, "User doesn't exists")),
     };
     
     // Check if the password is correct
-    if user.pass != pass {
+    if user.pass != password {
         return Err((StatusCode::UNAUTHORIZED, "Wrong password"));
     }
 

@@ -3,13 +3,15 @@ use serde::Deserialize;
 use toodeloo_core::token::Token;
 use toodeloo_tank::pg::Tank;
 use tracing::*;
+use uuid::Uuid;
 
-use super::todo_route;
+use super::{todo_route, UuidWrapper};
 
 pub fn routes() -> Router<Tank> {
     Router::new()
         .route("/create", post(create))
         .route("/", get(read_all))
+        .route("/{list_id}", get(read))
         .route("/update/{list_id}", put(todo_route))
         .route("/delete/{list_id}", delete(todo_route))
 }
@@ -22,13 +24,29 @@ struct CreateList {
 async fn create(
     State(tank): State<Tank>,
     Extension(token): Extension<Token>,
-    Json(create_list): Json<CreateList>,
+    Json(CreateList { label }): Json<CreateList>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
-    debug!("Create list - label: {:?}", create_list.label);
+    debug!("Create list - label: {:?}", label);
 
-    let id = tank.create_list(token.user_id, create_list.label).await.unwrap();
+    let id = tank.create_list(token.user_id, label).await.unwrap();
 
     Ok(Json(id))
+}
+
+async fn read(
+    State(tank): State<Tank>,
+    Extension(token): Extension<Token>,
+    Path(list_id): Path<Uuid>
+) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
+    debug!("Read list - User: {:?}", token.user_id);
+
+    let list = tank.read_list(list_id).await.unwrap();
+
+    if list.user_id != token.user_id {
+        return Err((StatusCode::FORBIDDEN, "You are not allowed to read this list"));
+    }
+
+    Ok(Json(list))
 }
 
 async fn read_all(
