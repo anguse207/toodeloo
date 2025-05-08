@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: toodeloo_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: toodaloo
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: development_db
+    ports:
+      - "5432:5432"
+    # volumes:
+      # - ./container_data:/var/lib/postgresql/data

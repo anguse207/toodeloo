@@ -5,12 +5,9 @@ edition = "2024"
 
 [dependencies]
 toodeloo-core = { path = "../core" }
-tokio = { version = "1.41.1", features = ["full"] }
-uuid = { version = "1.11.0" }
-sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio-native-tls"] }
-anyhow = "1.0.93"
-async-trait = "0.1.83"
+# tokio = { version = "1.45.1", features = ["full"] }
+uuid = { version = "1.16.0" }
+sqlx = { version = "0.8.5", features = ["postgres", "runtime-tokio-rustls", "uuid"] }
+anyhow = "1.0.98"
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"
-axum = "0.7.9"
-serde = { version = "1.0.217", features = ["derive"] }

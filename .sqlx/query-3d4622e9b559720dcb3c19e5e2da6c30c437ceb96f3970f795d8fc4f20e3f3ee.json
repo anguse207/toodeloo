@@ -1,0 +1,43 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE users SET name = $1, pass = $2, deleted_time = $3 WHERE id = $4 RETURNING id, name, pass, deleted_time",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "pass",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "deleted_time",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Int8",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "3d4622e9b559720dcb3c19e5e2da6c30c437ceb96f3970f795d8fc4f20e3f3ee"
+}

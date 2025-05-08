@@ -1,0 +1,18 @@
+pub mod users;
+pub mod lists;
+mod token;
+pub mod tasks;
+
+use sqlx::PgPool;
+
+#[derive(Clone)]
+pub struct Tank {
+    pool: PgPool,
+}
+
+impl Tank {
+    pub fn new(connection_str: impl AsRef<str>) -> Self {
+        let pool = PgPool::connect_lazy(connection_str.as_ref()).unwrap();
+        Tank { pool }
+    }
+}

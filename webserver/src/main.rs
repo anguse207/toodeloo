@@ -15,9 +15,8 @@ async fn main() -> Result<()> {
         .init();
     info!("Starting Logging...");
 
-    // let tank = init_db("testing.db").await?;
-
-    let tank = toodeloo_tank::sqlite::init_db("testing.db").await?;
+    let tank =
+        toodeloo_tank::pg::Tank::new("postgres://toodaloo:password@localhost:5432/development_db");
 
     let listener = TcpListener::bind(":::1337").await?;
     println!("listening on {}", listener.local_addr()?);
@@ -26,7 +25,8 @@ async fn main() -> Result<()> {
 
     tokio::spawn(async {
         axum::serve(listener, app).await.unwrap();
-        4000  })
+        4000
+    })
     .await?;
 
     Ok(())

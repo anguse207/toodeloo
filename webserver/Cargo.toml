@@ -10,7 +10,6 @@ tokio = { version = "1.45.0", features = ["full"] }
 uuid = { version = "1.11.0" }
 sqlx = { version = "0.8.2", features = ["sqlite", "runtime-tokio-native-tls"] }
 anyhow = "1.0.93"
-async-trait = "0.1.83"
 tracing = "0.1.41"
 tracing-subscriber = "0.3.19"
 axum = "0.8.4"
