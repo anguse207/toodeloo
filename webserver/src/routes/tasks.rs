@@ -28,7 +28,7 @@ async fn create(
     Extension(token): Extension<Token>,
     Json(CreateTask { list_id, title, content }): Json<CreateTask>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
-    debug!("Create task - title: {:?}", title);
+    debug!("Create task - User: {:?}", token.user_id);
 
     let list = tank.read_list(list_id).await.unwrap();
 

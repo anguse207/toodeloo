@@ -22,6 +22,10 @@ impl Token {
             revoked: false,
         }
     }
+
+    pub fn is_valid(&self) -> bool {
+        !self.revoked && self.expiry > get_timestamp()
+    }
 }
 
 // impl<'r> FromRow<'r, sqlx::sqlite::SqliteRow> for Token {

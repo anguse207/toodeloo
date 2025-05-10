@@ -26,7 +26,7 @@ pub async fn create_router(tank: Tank) -> Router {
             auth_middleware,
         ))
         // Serve react app
-        .fallback_service(ServeDir::new("frontend"))
+        .fallback_service(ServeDir::new("frontend-react/dist"))
 }
 
 pub async fn todo_route() {

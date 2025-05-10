@@ -1,7 +1,8 @@
 use std::time::Duration;
 
-use axum::{extract::State, http::{HeaderMap, StatusCode}, response::IntoResponse, routing::*, Json, Router};
+use axum::{extract::State, http::{HeaderMap, StatusCode}, response::IntoResponse, routing::*, Extension, Json, Router};
 use serde::Deserialize;
+use toodeloo_core::{timing::get_timestamp, token::Token};
 use toodeloo_tank::pg::Tank;
 use tracing::*;
 
@@ -13,7 +14,7 @@ pub fn routes() -> Router<Tank> {
         .route("/login", post(login))
         .route("/", get(todo_route))
         .route("/update", put(todo_route))
-        .route("/delete", delete(todo_route))
+        .route("/delete", delete(soft_delete))
 }
 
 #[derive(Deserialize)]
@@ -55,4 +56,21 @@ async fn login(
     let token_id = tank.create_token(user.id, Duration::from_secs(30)).await.unwrap();
     let token = tank.read_token(token_id).await.unwrap();
     Ok(Json(token))
+}
+
+async fn soft_delete(
+    State(tank): State<Tank>,
+    Extension(token): Extension<Token>,
+) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
+    debug!("Soft delete user - User: {:?}", token.user_id);
+
+    let mut user = tank.read_user_by_id(token.user_id).await.unwrap();
+    
+    user.deleted_time = get_timestamp();
+
+
+    tank.update_user(&user).await.unwrap();
+
+    // TODO: Revoke token?
+    Ok((StatusCode::OK, "User deleted"))
 }
