@@ -4,11 +4,13 @@ use tower_http::services::ServeDir;
 use tracing::*;
 use uuid::Uuid;
 
-use crate::auth::auth_middleware;
+use crate::{auth::auth_middleware, oauth_discord};
 
 mod lists;
 mod tasks;
 mod users;
+
+pub type RouterType = Router<Tank>;
 
 pub async fn create_router(tank: Tank) -> Router {
     Router::new()
@@ -16,6 +18,7 @@ pub async fn create_router(tank: Tank) -> Router {
         .nest("/api/users", users::routes())
         .nest("/api/lists", lists::routes())
         .nest("/api/tasks", tasks::routes())
+        .nest("/auth/discord", oauth_discord::routes())
         // Lists
         // Tasks
         // State

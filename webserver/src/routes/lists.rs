@@ -5,9 +5,9 @@ use toodeloo_tank::pg::Tank;
 use tracing::*;
 use uuid::Uuid;
 
-use super::{todo_route, UuidWrapper};
+use super::{todo_route, RouterType, UuidWrapper};
 
-pub fn routes() -> Router<Tank> {
+pub fn routes() -> RouterType {
     Router::new()
         .route("/create", post(create))
         .route("/", get(read_all))

@@ -11,9 +11,10 @@ pub async fn auth_middleware(
     next: Next,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
     // List of allowed paths that do not require authentication
-    const ALLOWED_PATHS: [&str; 2] = [
+    const ALLOWED_PATHS: [&str; 3] = [
         "/api/users/create",
         "/api/users/login",
+        "/auth/discord/callback",
     ];
 
     // Check if the request path is in the allowed paths

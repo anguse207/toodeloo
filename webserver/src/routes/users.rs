@@ -6,9 +6,9 @@ use toodeloo_core::{timing::get_timestamp, token::Token};
 use toodeloo_tank::pg::Tank;
 use tracing::*;
 
-use super::todo_route;
+use super::{todo_route, RouterType};
 
-pub fn routes() -> Router<Tank> {
+pub fn routes() -> RouterType {
     Router::new()
         .route("/create", post(create))
         .route("/login", post(login))
