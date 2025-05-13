@@ -109,6 +109,7 @@ async fn callback(
     // Login or create a new user in the database
     let token = match tank.read_user_by_oauth_id(&user_info.id).await {
         Ok(user) => {
+            info!("User found!");
             info!("Generating token for user: {:?}", &user_info.username);
             // Generate a session token for the user
             tank.create_token(user.id, core::time::Duration::from_secs(60 * 60 * 24 * 7))
@@ -131,7 +132,7 @@ async fn callback(
 
     // Add a header for setting the cookie
     let cookie_header = format!(
-        "Bearer={}; HttpOnly; Path=/; Max-Age={}",
+        "auth-token={}; HttpOnly; Path=/; Max-Age={}",
         token.id,
         i64::MAX // Maximum possible value for Max-Age
     );

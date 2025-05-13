@@ -1,38 +1,81 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './Home.css'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import ListSelector from './components/ListSelector';
+import Button from '@mui/material/Button';
 
-function Home() {
-  const [count, setCount] = useState(0)
-  const navigate = useNavigate();
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <button onClick={() => navigate('/login')}>Go to Login</button>
-    </>
-  )
+interface ListItem {
+  id: string;
+  title: string;
 }
 
-export default Home
+const Home: React.FC = () => {
+  const [lists, setLists] = useState<ListItem[] | null>(null);
+
+  useEffect(() => {
+    // Simulate loading lists from an API
+    setTimeout(() => {
+      setLists([
+        { id: '1', title: 'Groceries' },
+        { id: '2', title: 'Work' },
+        { id: '3', title: 'Personal' },
+      ]);
+    }, 1000);
+
+    setTimeout(() => {
+      setLists([
+        { id: '4', title: 'Hobbies' },
+        { id: '5', title: 'Travel' },
+        { id: '6', title: 'Fitness' },
+        { id: '7', title: 'Books' },
+        { id: '8', title: 'Movies' },
+        { id: '9', title: 'Music' },
+        { id: '10', title: 'Games' },
+        { id: '11', title: 'Projects' },
+        { id: '12', title: 'Shopping' },
+        { id: '13', title: 'Events' },
+        { id: '14', title: 'Ideas' },]);
+    }, 4000);
+  }, []);
+
+  const handlePostRequest = async () => {
+    const url = '/api/lists/create'; // Replace with your API endpoint
+    const body = {
+      label: 'My New List',
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Response data:', data);
+    } catch (error) {
+      console.error('Error posting data:', error);
+      // redirect to login page
+      window.location.href = '/login';
+      
+    }
+  };
+
+  const handleListChange = (selectedListId: string | null) => {
+    console.log('Selected List ID:', selectedListId);
+  };
+
+  return (
+    <div>
+      <Button onClick={() => handlePostRequest()} variant='contained'>Click me!</Button>
+      <ListSelector lists={lists} onListChange={handleListChange} />
+    </div>
+  );
+};
+
+export default Home;

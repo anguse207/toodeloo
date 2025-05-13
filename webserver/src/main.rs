@@ -19,7 +19,7 @@ async fn main() -> Result<()> {
             .await;
 
     let listener = TcpListener::bind(":::1337").await?;
-    println!("listening on {}", listener.local_addr()?);
+    println!("listening on {}\nhttp://localhost:1337/", listener.local_addr()?);
 
     let app = create_router(tank).await;
 
