@@ -1,6 +1,4 @@
-mod auth;
 mod routes;
-mod oauth_discord;
 
 use anyhow::{Ok, Result};
 use routes::create_router;

@@ -20,13 +20,18 @@ impl Tank {
 // test
 #[cfg(test)]
 mod tests {
+    use toodeloo_core::user::OauthProvider;
+
     use super::*;
 
     #[tokio::test]
     async fn pg_test() {
         let tank = Tank::new("postgres://toodaloo:password@localhost:5432/development_db").await;
 
-        let user_id = tank.create_user("Terry", "John").await.unwrap();
+        let user_id = tank
+            .create_user("Terry", OauthProvider::Discord, "terry.john@example.com")
+            .await
+            .unwrap();
         println!("User: {:?}", tank.read_user_by_id(user_id).await.unwrap());
 
         tank.create_token(user_id, core::time::Duration::from_secs(60))

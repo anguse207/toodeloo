@@ -1,11 +1,10 @@
+use auth::auth_middleware;
 use axum::{Router, middleware};
 use toodeloo_tank::pg::Tank;
-use tower_http::services::ServeDir;
+use tower_http::services::{ServeDir, ServeFile};
 use tracing::*;
-use uuid::Uuid;
 
-use crate::{auth::auth_middleware, oauth_discord};
-
+mod auth;
 mod lists;
 mod tasks;
 mod users;
@@ -18,7 +17,7 @@ pub async fn create_router(tank: Tank) -> Router {
         .nest("/api/users", users::routes())
         .nest("/api/lists", lists::routes())
         .nest("/api/tasks", tasks::routes())
-        .nest("/auth/discord", oauth_discord::routes())
+        .nest("/auth/discord", auth::discord::routes())
         // Lists
         // Tasks
         // State
@@ -29,13 +28,11 @@ pub async fn create_router(tank: Tank) -> Router {
             auth_middleware,
         ))
         // Serve react app
-        .fallback_service(ServeDir::new("frontend-react/dist"))
+        .fallback_service(ServeDir::new("frontend-react/dist")
+            .fallback(ServeFile::new("frontend-react/dist/index.html"))
+        )
 }
 
 pub async fn todo_route() {
     error!("!! HIT TODO ROUTE !!");
-}
-
-pub struct UuidWrapper {
-    pub id: Uuid,
 }

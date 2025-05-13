@@ -7,7 +7,7 @@ use uuid::Uuid;
 use super::Tank;
 
 impl Tank {
-    pub async fn create_token(&self, user_id: Uuid, duration: Duration) -> Result<Uuid> {
+    pub async fn create_token(&self, user_id: Uuid, duration: Duration) -> Result<Token> {
         let token = Token::new(user_id, duration);
 
         let query = sqlx::query!(
@@ -23,7 +23,7 @@ impl Tank {
         match query {
             Ok(_) => {
                 println!("Token created: {:?}", token);
-                Ok(token.id)
+                Ok(token)
             }
             Err(e) => {
                 eprintln!("Error creating token: {:?}", e);

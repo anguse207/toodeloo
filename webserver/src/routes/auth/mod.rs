@@ -1,9 +1,15 @@
 use axum::{
-    extract::{Request, State}, http::StatusCode, middleware::Next, response::{IntoResponse, Redirect}, Extension
+    Extension,
+    extract::{Request, State},
+    http::StatusCode,
+    middleware::Next,
+    response::IntoResponse,
 };
 use toodeloo_core::token::Token;
 use toodeloo_tank::pg::Tank;
 use tracing::*;
+
+pub mod discord;
 
 pub async fn auth_middleware(
     State(tank): State<Tank>,
@@ -42,7 +48,10 @@ pub async fn auth_middleware(
 
     // Redirect to login if token is missing or invalid
     debug!("Invalid or missing token");
-    return Err((StatusCode::UNAUTHORIZED, "You are not allowed to read this list"));
+    Err((
+        StatusCode::UNAUTHORIZED,
+        "You are not allowed to read this list",
+    ))
 }
 
 async fn _auth_test_handler(Extension(token): Extension<Token>) -> impl IntoResponse {

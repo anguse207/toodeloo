@@ -1,10 +1,12 @@
 -- Add migration script here
 
 -- Create the Users table
+CREATE TYPE oauth_provider AS ENUM ('discord', 'google', 'github', 'apple');
 CREATE TABLE Users (
     id UUID PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
-    pass TEXT NOT NULL,
+    oauth_id TEXT NOT NULL,
+    oauth_provider oauth_provider NOT NULL,
+    nickname TEXT NOT NULL UNIQUE,
     deleted_time BIGINT NOT NULL DEFAULT 0
 );
 

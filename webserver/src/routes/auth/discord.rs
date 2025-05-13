@@ -1,10 +1,13 @@
 use std::sync::Arc;
 
-use axum::{extract::{Query, State}, http::StatusCode, response::{Html, IntoResponse}, routing::get, Router};
+use axum::{
+    extract::{Query, State}, response::{AppendHeaders, Html, IntoResponse, Redirect}, routing::get, Json, Router
+};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use toodeloo_core::user::OauthProvider;
 use toodeloo_tank::pg::Tank;
-use tracing::info;
+use tracing::*;
 
 use crate::routes::RouterType;
 
@@ -13,9 +16,7 @@ const CLIENT_SECRET: &str = "ent7proy53eWSso5f2Acz7QfW-0iL3hB";
 const REDIRECT_URL: &str = "http://localhost:1337/auth/discord/callback";
 
 pub fn routes() -> RouterType {
-    Router::new()
-        .route("/callback", get(callback))
-
+    Router::new().route("/callback", get(callback))
 }
 
 /*
@@ -23,7 +24,7 @@ TODO: Use discord for authentication
 # USERS table
 user_id (from oauth)
 oauth_provider
-username
+nickname
 deleted_at
 ^ user_id is linked to the TOKENS table
 
@@ -52,7 +53,7 @@ struct AccessToken {
     scope: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 struct UserInfo {
     id: String,
     username: String,
@@ -103,31 +104,48 @@ async fn callback(
         .await
         .unwrap();
 
-    // Generate the avatar URL
-    let avatar_url = match &user_info.avatar {
+    debug!("Received user info: {:?}", user_info);
+
+    // Login or create a new user in the database
+    let token = match tank.read_user_by_oauth_id(&user_info.id).await {
+        Ok(user) => {
+            info!("Generating token for user: {:?}", &user_info.username);
+            // Generate a session token for the user
+            tank.create_token(user.id, core::time::Duration::from_secs(60 * 60 * 24 * 7))
+                .await
+                .unwrap()
+        }
+        Err(_) => {
+            info!("User not found, creating new user");
+            let user_id = tank
+                .create_user(&user_info.id, OauthProvider::Discord, &user_info.username)
+                .await
+                .unwrap();
+
+            info!("Generating token for user: {:?}", &user_info.username);
+            tank.create_token(user_id, core::time::Duration::from_secs(60 * 60 * 24 * 7))
+                .await
+                .unwrap()
+        }
+    };
+
+    // Add a header for setting the cookie
+    let cookie_header = format!(
+        "Bearer={}; HttpOnly; Path=/; Max-Age={}",
+        token.id,
+        i64::MAX // Maximum possible value for Max-Age
+    );
+    let headers = AppendHeaders([(axum::http::header::SET_COOKIE, cookie_header)]);    
+
+    (headers, Redirect::to("/"))
+}
+
+fn get_avatar_url(user_info: &UserInfo) -> String {
+    match &user_info.avatar {
         Some(avatar) => format!(
             "https://cdn.discordapp.com/avatars/{}/{}.png",
             user_info.id, avatar
         ),
         None => "https://cdn.discordapp.com/embed/avatars/0.png".to_string(), // Default avatar
-    };
-
-    // Return an HTML response with the user's name and avatar
-    Html(format!(
-        r#"
-        <html>
-            <body>
-                <h1>Welcome, {username}#{discriminator}!</h1>
-                <img src="{avatar_url}" alt="Avatar" />
-            </body>
-        </html>
-        "#,
-        username = user_info.username,
-        discriminator = user_info.discriminator,
-        avatar_url = avatar_url
-    ))
-    // format!(
-    //     "Hello, {}! Your Discord ID is {}.",
-    //     user_info.username, user_info.id
-    // )
+    }
 }

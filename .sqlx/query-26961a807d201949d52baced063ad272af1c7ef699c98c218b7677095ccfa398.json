@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT id, oauth_id, oauth_provider as \"oauth_provider: OauthProvider\", nickname, deleted_time\n            FROM users\n            WHERE id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "oauth_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "oauth_provider: OauthProvider",
+        "type_info": {
+          "Custom": {
+            "name": "oauth_provider",
+            "kind": {
+              "Enum": [
+                "discord",
+                "google",
+                "github",
+                "apple"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "nickname",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "deleted_time",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "26961a807d201949d52baced063ad272af1c7ef699c98c218b7677095ccfa398"
+}

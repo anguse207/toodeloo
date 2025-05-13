@@ -1,11 +1,17 @@
-use axum::{extract::{Path, State}, http::StatusCode, response::IntoResponse, routing::*, Extension, Json, Router};
+use axum::{
+    Extension, Json, Router,
+    extract::{Path, State},
+    http::StatusCode,
+    response::IntoResponse,
+    routing::*,
+};
 use serde::Deserialize;
 use toodeloo_core::token::Token;
 use toodeloo_tank::pg::Tank;
 use tracing::*;
 use uuid::Uuid;
 
-use super::{todo_route, RouterType, UuidWrapper};
+use super::{RouterType, todo_route};
 
 pub fn routes() -> RouterType {
     Router::new()
@@ -36,14 +42,17 @@ async fn create(
 async fn read(
     State(tank): State<Tank>,
     Extension(token): Extension<Token>,
-    Path(list_id): Path<Uuid>
+    Path(list_id): Path<Uuid>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
     debug!("Read list - User: {:?}", token.user_id);
 
     let list = tank.read_list(list_id).await.unwrap();
 
     if list.user_id != token.user_id {
-        return Err((StatusCode::FORBIDDEN, "You are not allowed to read this list"));
+        return Err((
+            StatusCode::FORBIDDEN,
+            "You are not allowed to read this list",
+        ));
     }
 
     Ok(Json(list))

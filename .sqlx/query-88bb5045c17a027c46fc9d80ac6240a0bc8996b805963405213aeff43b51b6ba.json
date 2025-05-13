@@ -1,0 +1,30 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO users (id, oauth_id, oauth_provider, nickname, deleted_time)\n            VALUES ($1, $2, $3, $4, $5)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        {
+          "Custom": {
+            "name": "oauth_provider",
+            "kind": {
+              "Enum": [
+                "discord",
+                "google",
+                "github",
+                "apple"
+              ]
+            }
+          }
+        },
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "88bb5045c17a027c46fc9d80ac6240a0bc8996b805963405213aeff43b51b6ba"
+}
