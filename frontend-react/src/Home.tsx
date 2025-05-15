@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ListSelector from './components/ListSelector';
+import ListSelector, { type ListItem } from './components/ListSelector';
 import Button from '@mui/material/Button';
-
-interface ListItem {
-  id: string;
-  title: string;
-}
 
 const Home: React.FC = () => {
   const [lists, setLists] = useState<ListItem[] | null>(null);

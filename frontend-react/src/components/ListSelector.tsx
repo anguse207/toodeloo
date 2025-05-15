@@ -4,7 +4,7 @@ import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
 
 // Define the type for a list item
-interface ListItem {
+export interface ListItem {
   id: string;
   title: string;
 }
