@@ -1,75 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import ListSelector, { type ListItem } from './components/ListSelector';
+import { ReadLists } from './api/ReadLists';
+import Snackbar, { type SnackbarCloseReason } from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import NavigationBar from './components/NavigationBar';
 
 const Home: React.FC = () => {
-  const [lists, setLists] = useState<ListItem[] | null>(null);
+  const [listSelectorItems, setListSelectorItems] = useState<ListItem[] | null>(null);
+  const [loginPromptToastOpen, setloginPromptToastOpen] = React.useState(false);
 
+  // const AddListItem: ListItem = { id: '0', title: 'Add new list' };
+  
   useEffect(() => {
-    // Simulate loading lists from an API
-    setTimeout(() => {
-      setLists([
-        { id: '1', title: 'Groceries' },
-        { id: '2', title: 'Work' },
-        { id: '3', title: 'Personal' },
-      ]);
-    }, 1000);
+    refreshListSelectorItems();
 
-    setTimeout(() => {
-      setLists([
-        { id: '4', title: 'Hobbies' },
-        { id: '5', title: 'Travel' },
-        { id: '6', title: 'Fitness' },
-        { id: '7', title: 'Books' },
-        { id: '8', title: 'Movies' },
-        { id: '9', title: 'Music' },
-        { id: '10', title: 'Games' },
-        { id: '11', title: 'Projects' },
-        { id: '12', title: 'Shopping' },
-        { id: '13', title: 'Events' },
-        { id: '14', title: 'Ideas' },]);
-    }, 4000);
-  }, []);
+    // // Simulate loading lists from an API
+    // setTimeout(async () => {
+    //   refreshListSelectorItems();
+    // }, 1000);
+  });
 
-  const handlePostRequest = async () => {
-    const url = '/api/lists/create'; // Replace with your API endpoint
-    const body = {
-      label: 'My New List',
-    };
+  const refreshListSelectorItems = async () => {
+    const lists_to_set: ListItem[] = [];
+    const newLists = await ReadLists();
+    // lists_to_set.push(AddListItem);
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    if (newLists) {
+      for (const list of newLists) {
+        lists_to_set.push({ id: list.id, title: list.label });
       }
-
-      const data = await response.json();
-      console.log('Response data:', data);
-    } catch (error) {
-      console.error('Error posting data:', error);
-      // redirect to login page
-      window.location.href = '/login';
-      
+    } else {
+      setloginPromptToastOpen(true);
     }
-  };
 
-  const handleListChange = (selectedListId: string | null) => {
+    setListSelectorItems(lists_to_set);
+  }
+
+  const handlelistSelectorChange = (selectedListId: string | null) => {
     console.log('Selected List ID:', selectedListId);
   };
 
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setloginPromptToastOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        Login
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        {/* <CloseIcon fontSize="small" /> */}
+      </IconButton>
+    </React.Fragment>
+  );
+
   return (
-    <div>
-      <Button onClick={() => handlePostRequest()} variant='contained'>Click me!</Button>
-      <ListSelector lists={lists} onListChange={handleListChange} />
-    </div>
+    <>
+      <NavigationBar />
+      <ListSelector lists={listSelectorItems} onListChange={handlelistSelectorChange} />
+      <Snackbar
+        open={loginPromptToastOpen}
+        autoHideDuration={1000}
+        onClose={() => setloginPromptToastOpen(false)}
+        message="You're not logged in!"
+        action={action}
+      />
+    </>
   );
 };
 

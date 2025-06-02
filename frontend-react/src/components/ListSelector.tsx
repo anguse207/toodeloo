@@ -27,23 +27,23 @@ const ListSelector: React.FC<ListSelectorProps> = ({ lists, onListChange }) => {
   return (
     <Box sx={{ minWidth: 320 }}>
         <FormControl fullWidth>
-        <InputLabel id="list-selector-label">Select Task List</InputLabel>
+        <InputLabel id="list-selector-label">Change task list</InputLabel>
         {lists === null ? (
-            // Show skeleton while lists are loading
-            <Skeleton variant="rounded" height={56} />
+          // Show skeleton while lists are loading
+          <Skeleton variant="rounded" height={56} />
         ) : (
             <Select
-            labelId="list-selector-label"
-            label="Select Task List"
-            value={selectedList || ''}
-            onChange={(event) => handleChange(event.target.value)}
-            displayEmpty
+              labelId="list-selector-label"
+              label="Change task list"
+              value={selectedList || ''}
+              onChange={(event) => handleChange(event.target.value)}
+              displayEmpty
             >
-            {lists.map((list) => (
+              {lists.map((list) => (
                 <MenuItem key={list.id} value={list.id}>
-                {list.title}
+                  {list.title}
                 </MenuItem>
-            ))}
+              ))}
             </Select>
         )}
         </FormControl>
