@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import ListSelector, { type ListItem } from './components/ListSelector';
-import { ReadLists } from './api/ReadLists';
 import Snackbar, { type SnackbarCloseReason } from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import NavigationBar from './components/NavigationBar';
+import { type ListItem } from './components/NavigationBar';
+import { useParams } from 'react-router-dom';
+import ListSelector from './components/NavigationBar';
+import { ReadLists } from './api/ReadLists';
 
 const Home: React.FC = () => {
+  const { listId } = useParams<{ listId: string | undefined }>(); // Access the taskId parameter
   const [listSelectorItems, setListSelectorItems] = useState<ListItem[] | null>(null);
   const [loginPromptToastOpen, setloginPromptToastOpen] = React.useState(false);
 
-  // const AddListItem: ListItem = { id: '0', title: 'Add new list' };
-  
   useEffect(() => {
     refreshListSelectorItems();
-
-    // // Simulate loading lists from an API
-    // setTimeout(async () => {
-    //   refreshListSelectorItems();
-    // }, 1000);
-  });
+    console.log(listId);
+  }, []);
 
   const refreshListSelectorItems = async () => {
     const lists_to_set: ListItem[] = [];
-    const newLists = await ReadLists();
-    // lists_to_set.push(AddListItem);
+    const newLists = await ReadLists() ?? [];
 
     if (newLists) {
       for (const list of newLists) {
@@ -36,10 +31,6 @@ const Home: React.FC = () => {
 
     setListSelectorItems(lists_to_set);
   }
-
-  const handlelistSelectorChange = (selectedListId: string | null) => {
-    console.log('Selected List ID:', selectedListId);
-  };
 
   const handleClose = (
     event: React.SyntheticEvent | Event,
@@ -70,8 +61,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <NavigationBar />
-      <ListSelector lists={listSelectorItems} onListChange={handlelistSelectorChange} />
+      <ListSelector lists={listSelectorItems}/>
       <Snackbar
         open={loginPromptToastOpen}
         autoHideDuration={1000}

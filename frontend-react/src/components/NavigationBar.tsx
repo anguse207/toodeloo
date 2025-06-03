@@ -7,80 +7,105 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from '@mui/icons-material/Menu';
 import React from "react";
 import Drawer from "@mui/material/Drawer";
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
+import { ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import { CreateList } from "../api/CreateList";
+import { useNavigate } from "react-router-dom";
 
-export default function ButtonAppBar() {
-    const [open, setOpen] = React.useState(false);
+// Define the type for a list item
+export interface ListItem {
+  id: string;
+  title: string;
+}
 
-    const toggleDrawer = (newOpen: boolean) => () => {
-      setOpen(newOpen);
-    };
+// Props for the ListSelector component
+export interface ListSelectorProps {
+  lists: ListItem[] | null; // Null indicates loading state
+}
 
-    const DrawerList = (
-        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-        <ListItem key="AddTask" disablePadding sx={{ marginTop: 2 }}>
-            <ListItemButton>
-                <ListItemIcon>
-                    <AddTaskIcon/>
-                </ListItemIcon>
-                <ListItemText primary="Task" />
-            </ListItemButton>
-        </ListItem>
-        <Divider />
-        <ListItem key="AddList" disablePadding sx={{ marginTop: 2 }}>
-            <ListItemButton>
-                <ListItemIcon>
-                    <AddCircleOutlineIcon/>
-                </ListItemIcon>
-                <ListItemText primary="List" />
-            </ListItemButton>
-        </ListItem>
-        <Divider />
-        <List>
-        {['Shoppings', 'Workouts', 'Birthday Presents'].map((text) => (
-            <ListItem key={text} disablePadding>
-            <ListItemButton>
-                <ListItemIcon>
-                    <ChecklistRtlIcon/>
-                </ListItemIcon>
-                <ListItemText primary={text} />
-            </ListItemButton>
-            </ListItem>
-        ))}
-        </List>
-        </Box>
-      );
+const ListSelector: React.FC<ListSelectorProps> = ({ lists }) => {
+  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
-    return (
-      <>
-        <AppBar position="fixed" sx={{ width: '100%' }}>
-          <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              / TDLO /
-            </Typography>
-            <Button onClick={toggleDrawer(true)} color="inherit">
-                Login
-            </Button>
-          </Toolbar>
-        </AppBar>
-        {/* Add padding to the content below the AppBar to prevent overlap */}
-        <Box sx={{ height: '64px' }} />
-        <Drawer open={open} onClose={toggleDrawer(false)}>
-            {DrawerList}
-        </Drawer>
-      </>
-    );
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  const createList = async () => {
+    const list_id = await CreateList();
+
+    // navigate to list_id
+    if (list_id) {
+      
+      navigate(`/${list_id}`);
+    }
   }
+
+  const DrawerList = (
+      <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <ListItem key="AddTask" disablePadding sx={{ marginTop: 2 }}>
+          <ListItemButton>
+              <ListItemText primary="Task" />
+              <ListItemIcon>
+                  <AddTaskIcon/>
+              </ListItemIcon>
+          </ListItemButton>
+      </ListItem>
+      <Divider />
+      <ListItem key="AddList" disablePadding sx={{ marginTop: 2 }}>
+          <ListItemButton onClick={createList}>
+              <ListItemText primary="List" />
+              <ListItemIcon>
+                  <AddCircleOutlineIcon/>
+              </ListItemIcon>
+          </ListItemButton>
+      </ListItem>
+      <Divider />
+      {lists?.map((list) => (
+        <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
+          <ListItemButton>
+            <ListItemText primary={list.title} />
+            <ListItemIcon>
+              <ChecklistRtlIcon/>
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
+      ))}
+      </Box>
+    );
+
+  return (
+    <>
+      <AppBar position="fixed" sx={{ width: '100%' }}>
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+            </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            / TDLO /
+          </Typography>
+          <Button onClick={toggleDrawer(true)} color="inherit">
+              Login
+          </Button>
+        </Toolbar>
+      </AppBar>
+      {/* Add padding to the content below the AppBar to prevent overlap */}
+      <Box sx={{ height: '64px' }} />
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+          {DrawerList}
+      </Drawer>
+    </>
+  );
+}
+
+export default ListSelector;
