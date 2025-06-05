@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MenuIcon from '@mui/icons-material/Menu';
-import React from "react";
+import React, { useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
@@ -13,6 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import { CreateList } from "../api/CreateList";
 import { useNavigate } from "react-router-dom";
+import { ReadUser } from "../api/ReadUser";
 
 // Define the type for a list item
 export interface ListItem {
@@ -25,10 +26,22 @@ export interface ListSelectorProps {
   lists: ListItem[] | null; // Null indicates loading state
 }
 
-const ListSelector: React.FC<ListSelectorProps> = ({ lists }) => {
+const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
   const [open, setOpen] = React.useState(false);
+  const [nickname, setNickname] = React.useState("?? NICKNAME ??");
   const navigate = useNavigate();
 
+    useEffect(() => {
+      fetchUser();
+    }, []);
+
+  const fetchUser = async () => {
+    const user = await ReadUser();
+
+    if (!user) navigate(`/login`);
+
+    setNickname(user!.nickname + " - " + user!.oauth_provider);
+  };
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -45,35 +58,35 @@ const ListSelector: React.FC<ListSelectorProps> = ({ lists }) => {
   }
 
   const DrawerList = (
-      <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <ListItem key="AddTask" disablePadding sx={{ marginTop: 2 }}>
-          <ListItemButton>
-              <ListItemText primary="Task" />
-              <ListItemIcon>
-                  <AddTaskIcon/>
-              </ListItemIcon>
-          </ListItemButton>
-      </ListItem>
-      <Divider />
-      <ListItem key="AddList" disablePadding sx={{ marginTop: 2 }}>
-          <ListItemButton onClick={createList}>
-              <ListItemText primary="List" />
-              <ListItemIcon>
-                  <AddCircleOutlineIcon/>
-              </ListItemIcon>
-          </ListItemButton>
-      </ListItem>
-      <Divider />
-      {lists?.map((list) => (
-        <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
-          <ListItemButton>
-            <ListItemText primary={list.title} />
-            <ListItemIcon>
-              <ChecklistRtlIcon/>
-            </ListItemIcon>
-          </ListItemButton>
+      <Box sx={{ width: 400 }} role="presentation" onClick={toggleDrawer(false)}>
+        <ListItem key="AddTask" disablePadding sx={{ marginTop: 2 }}>
+            <ListItemButton>
+                <ListItemText primary="Task" />
+                <ListItemIcon>
+                    <AddTaskIcon/>
+                </ListItemIcon>
+            </ListItemButton>
         </ListItem>
-      ))}
+        <Divider />
+        <ListItem key="AddList" disablePadding sx={{ marginTop: 2 }}>
+            <ListItemButton onClick={createList}>
+                <ListItemText primary="List" />
+                <ListItemIcon>
+                    <AddCircleOutlineIcon/>
+                </ListItemIcon>
+            </ListItemButton>
+        </ListItem>
+        <Divider />
+        {lists?.map((list) => (
+          <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
+            <ListItemButton>
+              <ListItemText primary={list.title} />
+              <ListItemIcon>
+                <ChecklistRtlIcon/>
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
+        ))}
       </Box>
     );
 
@@ -92,10 +105,10 @@ const ListSelector: React.FC<ListSelectorProps> = ({ lists }) => {
             <MenuIcon />
             </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            / TDLO /
+            Toodeloo
           </Typography>
-          <Button onClick={toggleDrawer(true)} color="inherit">
-              Login
+          <Button color="inherit">
+              {nickname}
           </Button>
         </Toolbar>
       </AppBar>
@@ -108,4 +121,4 @@ const ListSelector: React.FC<ListSelectorProps> = ({ lists }) => {
   );
 }
 
-export default ListSelector;
+export default DashboardLayout;

@@ -1,9 +1,10 @@
+use serde::Serialize;
 use sqlx::FromRow;
 use uuid::Uuid;
 
 use sqlx::Type;
 
-#[derive(Debug, Clone, PartialEq, Eq, Type, Copy)]
+#[derive(Debug, Clone, PartialEq, Eq, Type, Copy, Serialize)]
 #[sqlx(type_name = "oauth_provider")] // Matches the PostgreSQL enum type name
 #[sqlx(rename_all = "lowercase")] // Matches the PostgreSQL enum values
 pub enum OauthProvider {
@@ -13,7 +14,7 @@ pub enum OauthProvider {
     Apple,
 }
 
-#[derive(Debug, PartialEq, FromRow)]
+#[derive(Debug, PartialEq, FromRow, Serialize)]
 pub struct User {
     pub id: Uuid,
     pub oauth_id: String,

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Snackbar, { type SnackbarCloseReason } from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { type ListItem } from './components/NavigationBar';
+import { type ListItem } from './components/DashboardLayout';
 import { useParams } from 'react-router-dom';
-import ListSelector from './components/NavigationBar';
+import ListSelector from './components/DashboardLayout';
 import { ReadLists } from './api/ReadLists';
 
 const Home: React.FC = () => {
