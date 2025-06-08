@@ -14,6 +14,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import { CreateList } from "../api/CreateList";
 import { useNavigate } from "react-router-dom";
 import { ReadUser } from "../api/ReadUser";
+import LoginPromptToast from "./LoggedOutToast";
 
 // Define the type for a list item
 export interface ListItem {
@@ -27,24 +28,28 @@ export interface ListSelectorProps {
 }
 
 const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
-  const [open, setOpen] = React.useState(false);
+  const [DrawerOpen, setDrawerOpen] = React.useState(false);
   const [nickname, setNickname] = React.useState("?? NICKNAME ??");
+  const [LoginToastOpen, setLoginToastOpen] = React.useState(true);
   const navigate = useNavigate();
 
     useEffect(() => {
       fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
   const fetchUser = async () => {
     const user = await ReadUser();
 
-    if (!user) navigate(`/login`);
-
-    setNickname(user!.nickname + " - " + user!.oauth_provider);
+    if (user) {
+      setNickname(user!.nickname + " - " + user!.oauth_provider);
+    } else {
+      setLoginToastOpen(true);
+    }
   };
 
   const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
+    setDrawerOpen(newOpen);
   };
 
   const createList = async () => {
@@ -52,7 +57,6 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
 
     // navigate to list_id
     if (list_id) {
-      
       navigate(`/${list_id}`);
     }
   }
@@ -114,9 +118,10 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
       </AppBar>
       {/* Add padding to the content below the AppBar to prevent overlap */}
       <Box sx={{ height: '64px' }} />
-      <Drawer open={open} onClose={toggleDrawer(false)}>
+      <Drawer open={DrawerOpen} onClose={toggleDrawer(false)}>
           {DrawerList}
       </Drawer>
+      <LoginPromptToast open={LoginToastOpen}/>
     </>
   );
 }
