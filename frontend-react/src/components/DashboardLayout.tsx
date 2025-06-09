@@ -14,7 +14,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import { CreateList } from "../api/CreateList";
 import { useNavigate } from "react-router-dom";
 import { ReadUser } from "../api/ReadUser";
-import LoginPromptToast from "./LoginDialog";
+import LoginDialog from "./LoginDialog";
 
 // Define the type for a list item
 export interface ListItem {
@@ -35,7 +35,6 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
 
     useEffect(() => {
       fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
   const fetchUser = async () => {
@@ -121,7 +120,7 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
       <Drawer open={DrawerOpen} onClose={toggleDrawer(false)}>
           {DrawerList}
       </Drawer>
-      <LoginPromptToast open={LoginDialogOpen}/>
+      <LoginDialog open={LoginDialogOpen}/>
     </>
   );
 }

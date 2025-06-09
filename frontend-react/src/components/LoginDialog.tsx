@@ -14,37 +14,6 @@ export interface LoginDialogProps {
   open: boolean; // Null indicates loading state
 }
 
-// const LoginPromptToast: React.FC<LoginPromptToastProps> = ({ open }) => {
-//   const action = (
-//     <React.Fragment>
-//       <Button onClick={() => window.location.href = discordOAuthAuthorizationUrl} color="secondary" size="small">
-//         Discord
-//       </Button>
-//       <Button color="secondary" size="small">
-//         Github
-//       </Button>      
-//       <Button color="secondary" size="small">
-//         Google
-//       </Button>      
-//       <Button color="secondary" size="small">
-//         Apple
-//       </Button>
-//     </React.Fragment>
-//   );
-
-//   return (
-//     <>
-//       <Snackbar
-//         open={open}
-//         // autoHideDuration={1000}
-//         onClose={() => open = false}
-//         message="You're not logged in, login with..."
-//         action={action}
-//       />
-//     </>
-//   );
-// };
-
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,6 +23,17 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+// Shared button styles
+const buttonStyle = {
+  color: 'white',
+  textTransform: 'none',
+  fontWeight: 'bold',
+  paddingTop: 20,
+  paddingRight: 50,
+  paddingBottom: 20,
+  paddingLeft: 50,
+};
 
 const LoginPromptToast: React.FC<LoginDialogProps> = ({ open }) => {
   const reauthenticate = (): boolean => {
@@ -85,56 +65,36 @@ const LoginPromptToast: React.FC<LoginDialogProps> = ({ open }) => {
         </DialogContent>
         
         <DialogActions>
-          {/* Discord Button */}
-          <Button
+                    {/* Discord Button */}
+                    <Button
             onClick={() => window.location.href = discordOAuthAuthorizationUrl}
-            style={{
-              backgroundColor: '#5865F2',
-              color: 'white',
-              textTransform: 'none',
-              fontWeight: 'bold',
-            }}
+            style={{ ...buttonStyle, backgroundColor: '#5865F2', textTransform: 'none' }}
           >
-            Sign in with Discord
+            Discord
           </Button>
 
           {/* GitHub Button */}
           <Button
             onClick={() => window.location.href = "githubOAuthAuthorizationUrl"}
-            style={{
-              backgroundColor: '#333',
-              color: 'white',
-              textTransform: 'none',
-              fontWeight: 'bold',
-            }}
+            style={{ ...buttonStyle, backgroundColor: '#333', textTransform: 'none'  }}
           >
-            Sign in with GitHub
+            GitHub
           </Button>
 
           {/* Google Button */}
           <Button
             onClick={() => window.location.href = "googleOAuthAuthorizationUrl"}
-            style={{
-              backgroundColor: '#4285F4',
-              color: 'white',
-              textTransform: 'none',
-              fontWeight: 'bold',
-            }}
+            style={{ ...buttonStyle, backgroundColor: '#4285F4', textTransform: 'none'  }}
           >
-            Sign in with Google
+            Google
           </Button>
 
           {/* Apple Button */}
           <Button
             onClick={() => window.location.href = "appleOAuthAuthorizationUrl"}
-            style={{
-              backgroundColor: '#000',
-              color: 'white',
-              textTransform: 'none',
-              fontWeight: 'bold',
-            }}
+            style={{ ...buttonStyle, backgroundColor: '#000', textTransform: 'none'  }}
           >
-            Sign in with Apple
+            Apple
           </Button>
         </DialogActions>
       </Dialog>
