@@ -14,7 +14,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import { CreateList } from "../api/CreateList";
 import { useNavigate } from "react-router-dom";
 import { ReadUser } from "../api/ReadUser";
-import LoginPromptToast from "./LoggedOutToast";
+import LoginPromptToast from "./LoginDialog";
 
 // Define the type for a list item
 export interface ListItem {
@@ -30,7 +30,7 @@ export interface ListSelectorProps {
 const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
   const [DrawerOpen, setDrawerOpen] = React.useState(false);
   const [nickname, setNickname] = React.useState("?? NICKNAME ??");
-  const [LoginToastOpen, setLoginToastOpen] = React.useState(true);
+  const [LoginToastOpen, setLoginToastOpen] = React.useState(false);
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -57,7 +57,7 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
 
     // navigate to list_id
     if (list_id) {
-      navigate(`/${list_id}`);
+      navigate(`/${list_id}`, { replace: true });
     }
   }
 
@@ -83,7 +83,7 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
         <Divider />
         {lists?.map((list) => (
           <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate(`/${list.id}`, { replace: true })} >
               <ListItemText primary={list.title} />
               <ListItemIcon>
                 <ChecklistRtlIcon/>

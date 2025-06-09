@@ -1,15 +1,15 @@
 import './Login.css'
 import Box from '@mui/material/Box';
 
+export const discordOAuthAuthorizationUrl = 'https://discord.com/oauth2/authorize?client_id=1371559638784278568&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A1337%2Fauth%2Fdiscord%2Fcallback&scope=identify';
 function Login() {
-  const oauthUrl = 'https://discord.com/oauth2/authorize?client_id=1371559638784278568&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A1337%2Fauth%2Fdiscord%2Fcallback&scope=identify';
 
   return (
     <>
       {/* <h1>Login</h1> */}
       <Box>
       <button 
-        onClick={() => window.location.href = oauthUrl} 
+        onClick={() => window.location.href = discordOAuthAuthorizationUrl} 
         style={{
           marginTop: '20px',
           padding: '10px 20px',
