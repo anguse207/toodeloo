@@ -30,7 +30,7 @@ export interface ListSelectorProps {
 const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
   const [DrawerOpen, setDrawerOpen] = React.useState(false);
   const [nickname, setNickname] = React.useState("?? NICKNAME ??");
-  const [LoginToastOpen, setLoginToastOpen] = React.useState(false);
+  const [LoginDialogOpen, setLoginDialogOpen] = React.useState(false);
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
     if (user) {
       setNickname(user!.nickname + " - " + user!.oauth_provider);
     } else {
-      setLoginToastOpen(true);
+      setLoginDialogOpen(true);
     }
   };
 
@@ -121,7 +121,7 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
       <Drawer open={DrawerOpen} onClose={toggleDrawer(false)}>
           {DrawerList}
       </Drawer>
-      <LoginPromptToast open={LoginToastOpen}/>
+      <LoginPromptToast open={LoginDialogOpen}/>
     </>
   );
 }
