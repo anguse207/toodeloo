@@ -23,7 +23,7 @@ async fn read(
     State(tank): State<Tank>,
     Extension(token): Extension<Token>,
 ) -> Result<impl IntoResponse, (StatusCode, &'static str)> {
-    debug!("Read list - User: {:?}", token.user_id);
+    debug!("Read user - User: {:?}", token.user_id);
 
     let user = tank.read_user_by_id(token.user_id).await.unwrap();
 

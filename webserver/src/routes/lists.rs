@@ -55,6 +55,8 @@ async fn read(
         ));
     }
 
+    info!("{:?}", list);
+
     Ok(Json(list))
 }
 

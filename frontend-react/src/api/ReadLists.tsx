@@ -1,12 +1,5 @@
 import { HOST } from "./Constants";
-
-// Define the TypeScript interface matching the Rust struct
-export interface List {
-  id: string;
-  user_id: string;
-  label: string;
-  deleted_time: number; // Assuming i64 maps to number in TypeScript
-}
+import type { List } from "./ReadList";
 
 export const ReadLists = async (): Promise<List[] | undefined> => {
   const url = HOST + "/api/lists";

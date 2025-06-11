@@ -8,11 +8,11 @@ use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // setup tracing
+    // // setup tracing
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO) // Set max level to DEBUG
+        .with_max_level(tracing::Level::DEBUG) // Set max log level
+        .with_target(true) // Include log targets (e.g., crate/module names)
         .init();
-    info!("Starting Logging...");
 
     let tank =
         toodeloo_tank::pg::Tank::new("postgres://toodaloo:password@localhost:5432/development_db")

@@ -1,15 +1,14 @@
 import { HOST } from "./Constants";
 
-export interface User {
-  id: string,
-  oauth_id: string,
-  oauth_provider: string,
-  nickname: string,
-  deleted_time: number,
+export interface List {
+  id: string;
+  user_id: string;
+  label: string;
+  deleted_time: number;
 }
 
-export const ReadUser = async (): Promise<User | undefined> => {
-  const url = HOST + "/api/users";
+export const ReadList = async (listId: string): Promise<List | undefined> => {
+  const url = HOST + "/api/lists/" + listId;
 
   try {
     const response = await fetch(url, {

@@ -3,6 +3,7 @@ import { type ListItem } from './components/DashboardLayout';
 import { useParams } from 'react-router-dom';
 import DashboardLayout from './components/DashboardLayout';
 import { ReadLists } from './api/ReadLists';
+import ListTextField from './components/ListEditor';
 
 const Home: React.FC = () => {
   const { listId } = useParams<{ listId: string | undefined }>(); // Access the taskId parameter
@@ -29,6 +30,7 @@ const Home: React.FC = () => {
   return (
     <>
       <DashboardLayout lists={listSelectorItems}/>
+      <ListTextField listId={listId}/>
     </>
   );
 };
