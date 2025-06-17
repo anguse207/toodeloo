@@ -1,12 +1,10 @@
 import { HOST } from "./Constants";
 
-export const CreateList = async (): Promise<string | undefined> => {
+export const CreateList = async (listLabel: string): Promise<string | undefined> => {
   const url = HOST + "/api/lists/create";
 
-  const timestamp = Math.floor(Date.now() / 1000);
-
   const body = {
-    label: timestamp.toString(),
+    label: listLabel,
   };
 
   try {

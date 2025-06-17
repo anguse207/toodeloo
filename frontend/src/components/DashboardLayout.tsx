@@ -27,9 +27,29 @@ export interface ListSelectorProps {
   lists: ListItem[] | null; // Null indicates loading state
 }
 
+
+const drawerWidth = 300;
+
 const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
-  const [DrawerOpen, setDrawerOpen] = React.useState(false);
-  const [nickname, setNickname] = React.useState("?? NICKNAME ??");
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [isClosing, setIsClosing] = React.useState(false);
+
+  const handleDrawerClose = () => {
+    setIsClosing(true);
+    setMobileOpen(false);
+  };
+
+  const handleDrawerTransitionEnd = () => {
+    setIsClosing(false);
+  };
+
+  const handleDrawerToggle = () => {
+    if (!isClosing) {
+      setMobileOpen(!mobileOpen);
+    }
+  };
+  
+  const [nickname, setNickname] = React.useState("");
   const [LoginDialogOpen, setLoginDialogOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -47,12 +67,8 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
     }
   };
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setDrawerOpen(newOpen);
-  };
-
   const createList = async () => {
-    const list_id = await CreateList();
+    const list_id = await CreateList("super cali fragilistic expialidocious, super cali fragilistic expialidocious ");
 
     // navigate to list_id
     if (list_id) {
@@ -60,8 +76,15 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
     }
   }
 
+  const logout = async () => {
+    // Delete the auth-token cookie
+    // document.cookie = "auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    // Needs to be deleted server side
+    setLoginDialogOpen(true);
+  };
+
   const DrawerList = (
-      <Box sx={{ width: 400 }} role="presentation" onClick={toggleDrawer(false)}>
+      <Box sx={{ width: '100%' }} role="presentation" >
         <ListItem key="AddTask" disablePadding sx={{ marginTop: 2 }}>
             <ListItemButton>
                 <ListItemText primary="Task" />
@@ -95,32 +118,71 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ width: '100%' }}>
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-            </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Toodeloo
-          </Typography>
-          <Button color="inherit">
-              {nickname}
-          </Button>
-        </Toolbar>
-      </AppBar>
-      {/* Add padding to the content below the AppBar to prevent overlap */}
-      <Box sx={{ height: '64px' }} />
-      <Drawer open={DrawerOpen} onClose={toggleDrawer(false)}>
-          {DrawerList}
-      </Drawer>
+      {/* Login popup */}
       <LoginDialog open={LoginDialogOpen}/>
+
+      <Box sx={{ display: 'flex' }}>
+        <AppBar
+          position="fixed"
+          sx={{
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              toodeloo
+            </Typography>
+            <Button onClick={logout} color="inherit" sx={{ marginLeft: 'auto' }}>
+              {nickname}
+            </Button>
+          </Toolbar>
+        </AppBar>
+
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onTransitionEnd={handleDrawerTransitionEnd}
+            onClose={handleDrawerClose}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            slotProps={{
+              root: {
+                keepMounted: true, // Better open performance on mobile.
+              },
+            }}
+          >
+            {DrawerList}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', sm: 'block' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+          >
+            {DrawerList}
+          </Drawer>
+        </Box>
+      </Box>
     </>
   );
 }

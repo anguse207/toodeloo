@@ -68,7 +68,7 @@ impl Tank {
         Ok(updated_list)
     }
 
-    pub async fn delete_list(&self, id: Uuid) -> Result<()> {
+    pub async fn delete_list(&self, id: &Uuid) -> Result<()> {
         sqlx::query!("DELETE FROM lists WHERE id = $1", id)
             .execute(&self.pool)
             .await?;

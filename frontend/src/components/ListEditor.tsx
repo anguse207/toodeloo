@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import { ReadList, type List } from '../api/ReadList';
+import { ReadList } from '../api/ReadList';
 
 interface ListTextFieldProps {
   listId: string | undefined;
@@ -20,6 +20,7 @@ const ListTextField: React.FC<ListTextFieldProps> = ({ listId }) => {
     if (listId) {
       fetchListData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listId]);
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,14 +29,25 @@ const ListTextField: React.FC<ListTextFieldProps> = ({ listId }) => {
   };
 
   return (
+    <div style={{
+      margin: '16px auto', 
+      width: '60%'
+    }}>
     <TextField
-      id="list-label"
-      label="Name your task!"
-      variant="standard"
-      value={label} // Display list.label if list is not null
-      onChange={handleTextChange} // Call method on text change
-      fullWidth
-    />
+      style={{
+        marginTop: '48px',
+        padding: '16px',
+      }}
+        id="list-label"
+        label="List Label"
+        variant="standard"
+        value={label} // Display list.label if list is not null
+        onChange={handleTextChange} // Call method on text change
+        fullWidth
+        type="text"
+      />
+    </div>
+
   );
 };
 
