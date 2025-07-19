@@ -6,7 +6,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/:listId" element={<Home />} />
+        <Route path="/:selectedListId" element={<Home />} />
       </Routes>
     </Router>
   );

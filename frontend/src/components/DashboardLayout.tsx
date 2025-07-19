@@ -15,6 +15,8 @@ import { CreateList } from "../api/CreateList";
 import { useNavigate } from "react-router-dom";
 import { ReadUser } from "../api/ReadUser";
 import LoginDialog from "./LoginDialog";
+import ListTitle from "./ListTitle";
+import { ReadLists } from "../api/ReadLists";
 
 // Define the type for a list item
 export interface ListItem {
@@ -23,16 +25,36 @@ export interface ListItem {
 }
 
 // Props for the ListSelector component
-export interface ListSelectorProps {
-  lists: ListItem[] | null; // Null indicates loading state
+export interface DashboardLayoutProps {
+  selectedListId: string | undefined;
 }
 
 
-const drawerWidth = 300;
+const drawerWidth = 500;
 
-const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ selectedListId }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [listTitleIsDirty, setListTitleIsDirty] = React.useState(false);
+  const [listSelectorItems, setListSelectorItems] = React.useState<ListItem[] | null>(null);
+
+  useEffect(() => {
+    refreshListSelectorItems();
+  }, [selectedListId, listTitleIsDirty]);
+
+  const refreshListSelectorItems = async () => {
+    const lists_to_set: ListItem[] = [];
+    const newLists = await ReadLists() ?? [];
+
+    if (newLists) {
+      for (const list of newLists) {
+        lists_to_set.push({ id: list.id, title: list.label });
+        lists_to_set.reverse();
+      }
+    }
+
+    setListSelectorItems(lists_to_set);
+  }
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -53,9 +75,9 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
   const [LoginDialogOpen, setLoginDialogOpen] = React.useState(false);
   const navigate = useNavigate();
 
-    useEffect(() => {
-      fetchUser();
-    }, []);
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const fetchUser = async () => {
     const user = await ReadUser();
@@ -68,12 +90,29 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
   };
 
   const createList = async () => {
-    const list_id = await CreateList("super cali fragilistic expialidocious, super cali fragilistic expialidocious ");
+    const list_id = await CreateList("");
 
     // navigate to list_id
     if (list_id) {
       navigate(`/${list_id}`, { replace: true });
     }
+  }
+
+  const switchList = async (listId: string) => {
+    // navigate to list_id
+    while (listTitleIsDirty) {
+      console.warn("Waiting for changes to be saved...");
+      await new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (!listTitleIsDirty) {
+            clearInterval(interval);
+            resolve(null);
+          }
+        }, 100); // Check every x ms
+      });
+    }
+
+    navigate(`/${listId}`, { replace: true });
   }
 
   const logout = async () => {
@@ -103,9 +142,9 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
             </ListItemButton>
         </ListItem>
         <Divider />
-        {lists?.map((list) => (
+        {listSelectorItems?.map((list) => (
           <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
-            <ListItemButton onClick={() => navigate(`/${list.id}`, { replace: true })} >
+            <ListItemButton onClick={() => switchList(`${list.id}`)} >
               <ListItemText primary={list.title} />
               <ListItemIcon>
                 <ChecklistRtlIcon/>
@@ -183,6 +222,11 @@ const DashboardLayout: React.FC<ListSelectorProps> = ({ lists }) => {
           </Drawer>
         </Box>
       </Box>
+
+      <Box sx={{ marginLeft: drawerWidth / 10 }}>
+        {selectedListId && <ListTitle listId={selectedListId} setIsDirty={setListTitleIsDirty}/>}
+      </Box>
+
     </>
   );
 }
