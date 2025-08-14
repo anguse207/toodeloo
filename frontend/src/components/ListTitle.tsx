@@ -1,22 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import { ReadList } from '../api/ReadList';
 import { UpdateList } from '../api/UpdateList';
-import { debounce } from '../utils/debounce';
 
 interface ListTextFieldProps {
   listId: string;
-  setIsDirty: React.Dispatch<React.SetStateAction<boolean>>
+  setIsDirty: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshListHandler: () => void;
 }
 
-const ListTextField: React.FC<ListTextFieldProps> = ({ listId , setIsDirty}) => {
+const ListTextField: React.FC<ListTextFieldProps> = ({ listId, setIsDirty, refreshListHandler}) => {
   const [label, setLabel] = useState<string>(''); // State for the text field value
 
-// Example: mark form as dirty when user types
   const fetchListData = React.useCallback(async () => {
     const currentList = await ReadList(listId!); // Fetch the list by ID
     if (currentList) {
       setLabel(currentList.label); // Pre-fill the text field with the fetched label
+    } else {
+      console.error('List not found or could not be fetched');
+      setLabel(''); // Reset label if list is not found
     }
   }, [listId]);
 
@@ -25,30 +27,12 @@ const ListTextField: React.FC<ListTextFieldProps> = ({ listId , setIsDirty}) => 
     if (listId) {
       fetchListData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listId]);
+  });
 
-  // Create the debounced function
-  const debouncedUpdate = useRef(
-    debounce((value: string) => {
-      console.log(`Updating List "${listId}" with "${value}"`);
-      UpdateList(listId, value);
-      setIsDirty(false);
-    }, 2000)
-  );
-
-  // Cleanup debounce when listId changes
-  useEffect(() => {
-    const currentDebouncedUpdate = debouncedUpdate.current;
-    return () => {
-      currentDebouncedUpdate.cancel(); // Cancel the debounce
-    };
-  }, [listId]);
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsDirty(true);
+  const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLabel(event.target.value);
-    debouncedUpdate.current(event.target.value);
+    UpdateList(listId, event.target.value);
+    refreshListHandler();
   };
 
   return (
@@ -64,8 +48,8 @@ const ListTextField: React.FC<ListTextFieldProps> = ({ listId , setIsDirty}) => 
         id="list-label"
         label="Label this list"
         variant="standard"
-        value={label} // Display list.label if list is not null
-        onChange={onChange} // Call method on text change
+        value={label}
+        onChange={onChange}
         fullWidth
         type="text"
       />

@@ -1,17 +1,18 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO lists (id, user_id, label, deleted_time) VALUES ($1, $2, $3, $4)",
+  "query": "INSERT INTO lists (id, user_id, origin_time, label, deleted_time) VALUES ($1, $2, $3, $4, $5)",
   "describe": {
     "columns": [],
     "parameters": {
       "Left": [
         "Uuid",
         "Uuid",
+        "Int8",
         "Text",
         "Int8"
       ]
     },
     "nullable": []
   },
-  "hash": "56c9c71ed0ee9ca5a32d69d85280fa4d5063fa51f6855fb7c6f6de2ab4710a97"
+  "hash": "121d42c50b27455d85671889dfdb4965b9d013b5611834d0dbfbfbc2a90c2f12"
 }

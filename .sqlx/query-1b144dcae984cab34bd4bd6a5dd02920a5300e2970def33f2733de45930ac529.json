@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time FROM tasks WHERE id = $1",
+  "query": "UPDATE lists SET user_id = $1, origin_time = $2, label = $3, deleted_time = $4 WHERE id = $5 RETURNING id, user_id, origin_time, label, deleted_time",
   "describe": {
     "columns": [
       {
@@ -10,7 +10,7 @@
       },
       {
         "ordinal": 1,
-        "name": "list_id",
+        "name": "user_id",
         "type_info": "Uuid"
       },
       {
@@ -20,32 +20,21 @@
       },
       {
         "ordinal": 3,
-        "name": "title",
+        "name": "label",
         "type_info": "Text"
       },
       {
         "ordinal": 4,
-        "name": "content",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 5,
-        "name": "done",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 6,
-        "name": "snoozed_until",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 7,
         "name": "deleted_time",
         "type_info": "Int8"
       }
     ],
     "parameters": {
       "Left": [
+        "Uuid",
+        "Int8",
+        "Text",
+        "Int8",
         "Uuid"
       ]
     },
@@ -54,11 +43,8 @@
       false,
       false,
       false,
-      false,
-      false,
-      false,
       false
     ]
   },
-  "hash": "8dcc870508f1b464ebb36c91710e2c6729f0c22c61c74df44665a3500043cad0"
+  "hash": "1b144dcae984cab34bd4bd6a5dd02920a5300e2970def33f2733de45930ac529"
 }

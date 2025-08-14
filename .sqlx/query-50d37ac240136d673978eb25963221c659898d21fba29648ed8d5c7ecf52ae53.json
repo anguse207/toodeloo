@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity FROM tasks WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "list_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "origin_time",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "done",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "snoozed_until",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "deleted_time",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "last_activity",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "50d37ac240136d673978eb25963221c659898d21fba29648ed8d5c7ecf52ae53"
+}

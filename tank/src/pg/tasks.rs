@@ -13,7 +13,7 @@ impl Tank {
     ) -> Result<Uuid> {
         let task = Task::new(list_id, title.into(), content.into());
         let query = sqlx::query!(
-            "INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+            "INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
             task.id,
             task.list_id,
             task.origin_time,
@@ -21,7 +21,8 @@ impl Tank {
             task.content,
             task.done,
             task.snoozed_until,
-            task.deleted_time
+            task.deleted_time,
+            task.last_activity
         ).execute(&self.pool)
         .await;
 
@@ -40,7 +41,7 @@ impl Tank {
     pub async fn read_task(&self, id: Uuid) -> Result<Task> {
         let query = sqlx::query_as!(
             Task,
-            "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time FROM tasks WHERE id = $1",
+            "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity FROM tasks WHERE id = $1",
             id
         )
         .fetch_one(&self.pool)
@@ -52,7 +53,7 @@ impl Tank {
     pub async fn read_tasks_from_list_id(&self, id: Uuid) -> Result<Vec<Task>> {
         let query = sqlx::query_as!(
             Task,
-            "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time FROM tasks WHERE list_id = $1",
+            "SELECT id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity FROM tasks WHERE list_id = $1",
             id
         )
         .fetch_all(&self.pool)
@@ -64,7 +65,7 @@ impl Tank {
     pub async fn update_task(&self, task: &Task) -> Result<Task> {
         let updated_task = sqlx::query_as!(
             Task,
-            "UPDATE tasks SET list_id = $1, origin_time = $2, title = $3, content = $4, done = $5, snoozed_until = $6, deleted_time = $7 WHERE id = $8 RETURNING id, list_id, origin_time, title, content, done, snoozed_until, deleted_time",
+            "UPDATE tasks SET list_id = $1, origin_time = $2, title = $3, content = $4, done = $5, snoozed_until = $6, deleted_time = $7, last_activity = $8 WHERE id = $9 RETURNING id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity",
             task.list_id,
             task.origin_time,
             task.title,
@@ -72,6 +73,7 @@ impl Tank {
             task.done,
             task.snoozed_until,
             task.deleted_time,
+            task.last_activity,
             task.id
         )
         .fetch_one(&self.pool)

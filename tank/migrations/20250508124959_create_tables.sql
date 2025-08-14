@@ -22,6 +22,7 @@ CREATE TABLE Tokens (
 CREATE TABLE Lists (
     id UUID PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    origin_time BIGINT NOT NULL DEFAULT 0,
     label TEXT NOT NULL,
     deleted_time BIGINT NOT NULL DEFAULT 0
 );
@@ -35,5 +36,6 @@ CREATE TABLE Tasks (
     content TEXT NOT NULL,
     done BOOLEAN NOT NULL DEFAULT FALSE,
     snoozed_until BIGINT NOT NULL DEFAULT 0,
-    deleted_time BIGINT NOT NULL DEFAULT 0
+    deleted_time BIGINT NOT NULL DEFAULT 0,
+    last_activity BIGINT NOT NULL DEFAULT 0
 );

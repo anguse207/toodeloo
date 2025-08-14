@@ -8,9 +8,10 @@ impl Tank {
     pub async fn create_list(&self, user_id: Uuid, label: impl AsRef<str>) -> Result<Uuid> {
         let list = List::new(user_id, label.as_ref());
         let query = sqlx::query!(
-            "INSERT INTO lists (id, user_id, label, deleted_time) VALUES ($1, $2, $3, $4)",
+            "INSERT INTO lists (id, user_id, origin_time, label, deleted_time) VALUES ($1, $2, $3, $4, $5)",
             list.id,
             list.user_id,
+            list.origin_time,
             list.label,
             list.deleted_time
         )
@@ -32,7 +33,7 @@ impl Tank {
     pub async fn read_list(&self, id: Uuid) -> Result<List> {
         let query = sqlx::query_as!(
             List,
-            "SELECT id, user_id, label, deleted_time FROM lists WHERE id = $1",
+            "SELECT id, user_id, origin_time, label, deleted_time FROM lists WHERE id = $1",
             id
         )
         .fetch_one(&self.pool)
@@ -44,7 +45,7 @@ impl Tank {
     pub async fn read_lists_from_user_id(&self, user_id: Uuid) -> Result<Vec<List>> {
         let query = sqlx::query_as!(
             List,
-            "SELECT id, user_id, label, deleted_time FROM lists WHERE user_id = $1",
+            "SELECT id, user_id, origin_time, label, deleted_time FROM lists WHERE user_id = $1",
             user_id
         )
         .fetch_all(&self.pool)
@@ -56,8 +57,9 @@ impl Tank {
     pub async fn update_list(&self, list: &List) -> Result<List> {
         let updated_list = sqlx::query_as!(
             List,
-            "UPDATE lists SET user_id = $1, label = $2, deleted_time = $3 WHERE id = $4 RETURNING id, user_id, label, deleted_time",
+            "UPDATE lists SET user_id = $1, origin_time = $2, label = $3, deleted_time = $4 WHERE id = $5 RETURNING id, user_id, origin_time, label, deleted_time",
             list.user_id,
+            list.origin_time,
             list.label,
             list.deleted_time,
             list.id

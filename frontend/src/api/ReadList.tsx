@@ -3,6 +3,7 @@ import { HOST } from "./Constants";
 export interface List {
   id: string;
   user_id: string;
+  origin_time: number;
   label: string;
   deleted_time: number;
 }

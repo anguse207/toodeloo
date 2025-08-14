@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, user_id, label, deleted_time FROM lists WHERE user_id = $1",
+  "query": "SELECT id, user_id, origin_time, label, deleted_time FROM lists WHERE user_id = $1",
   "describe": {
     "columns": [
       {
@@ -15,11 +15,16 @@
       },
       {
         "ordinal": 2,
+        "name": "origin_time",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
         "name": "label",
         "type_info": "Text"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "deleted_time",
         "type_info": "Int8"
       }
@@ -33,8 +38,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "4466ba992eabc6cf4c5455aea0d3bfb831aa41310a1959c83023b594d2dc7336"
+  "hash": "fd3c0a94102e36b16bed8e3e54c182be3db6dbdd4434f7fb3f87237753080d0c"
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+  "query": "INSERT INTO tasks (id, list_id, origin_time, title, content, done, snoozed_until, deleted_time, last_activity) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
   "describe": {
     "columns": [],
     "parameters": {
@@ -12,10 +12,11 @@
         "Text",
         "Bool",
         "Int8",
+        "Int8",
         "Int8"
       ]
     },
     "nullable": []
   },
-  "hash": "bc4cf231ccec49af2fe93b0844a87c193cf3539c7aefa8ef5c3dd45bb8c80ea7"
+  "hash": "4fa3f828f800684b11cdbe7cd8f5e1478a7e1bc71ac6c03823f08d9dae0883ad"
 }

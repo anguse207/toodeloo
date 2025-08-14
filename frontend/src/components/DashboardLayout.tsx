@@ -17,12 +17,7 @@ import { ReadUser } from "../api/ReadUser";
 import LoginDialog from "./LoginDialog";
 import ListTitle from "./ListTitle";
 import { ReadLists } from "../api/ReadLists";
-
-// Define the type for a list item
-export interface ListItem {
-  id: string;
-  title: string;
-}
+import type { List } from "../api/ReadList";
 
 // Props for the ListSelector component
 export interface DashboardLayoutProps {
@@ -36,24 +31,26 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ selectedListId }) => 
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [listTitleIsDirty, setListTitleIsDirty] = React.useState(false);
-  const [listSelectorItems, setListSelectorItems] = React.useState<ListItem[] | null>(null);
+  const [listSelectorItems, setListSelectorItems] = React.useState<List[] | null>(null);
 
   useEffect(() => {
     refreshListSelectorItems();
   }, [selectedListId, listTitleIsDirty]);
 
   const refreshListSelectorItems = async () => {
-    const lists_to_set: ListItem[] = [];
-    const newLists = await ReadLists() ?? [];
+    const Lists = await ReadLists() ?? [];
 
-    if (newLists) {
-      for (const list of newLists) {
-        lists_to_set.push({ id: list.id, title: list.label });
-        lists_to_set.reverse();
-      }
-    }
+    // debug
+    console.log('Fetched lists:', Lists);
+    // Sort lists by origin_time
+    Lists.sort((a, b) => {
+      return b.origin_time - a.origin_time;
+    });
 
-    setListSelectorItems(lists_to_set);
+    // debug
+    console.log('Sorted lists:', Lists);
+
+    setListSelectorItems(Lists);
   }
 
   const handleDrawerClose = () => {
@@ -145,7 +142,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ selectedListId }) => 
         {listSelectorItems?.map((list) => (
           <ListItem key={list.id} disablePadding sx={{ marginTop: 1 }}>
             <ListItemButton onClick={() => switchList(`${list.id}`)} >
-              <ListItemText primary={list.title} />
+              <ListItemText primary={list.label} />
               <ListItemIcon>
                 <ChecklistRtlIcon/>
               </ListItemIcon>
@@ -178,7 +175,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ selectedListId }) => 
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Typography onClick={() => switchList(``)} variant="h6" noWrap component="div">
               toodeloo
             </Typography>
             <Button onClick={logout} color="inherit" sx={{ marginLeft: 'auto' }}>
@@ -224,7 +221,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ selectedListId }) => 
       </Box>
 
       <Box sx={{ marginLeft: drawerWidth / 10 }}>
-        {selectedListId && <ListTitle listId={selectedListId} setIsDirty={setListTitleIsDirty}/>}
+        {selectedListId && <ListTitle listId={selectedListId} setIsDirty={setListTitleIsDirty} refreshListHandler={refreshListSelectorItems}/>}
       </Box>
 
     </>

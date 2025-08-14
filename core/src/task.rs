@@ -14,6 +14,7 @@ pub struct Task {
     pub done: bool,
     pub snoozed_until: i64,
     pub deleted_time: i64,
+    pub last_activity: i64,
 }
 
 impl Task {
@@ -27,6 +28,7 @@ impl Task {
             done: false,
             snoozed_until: 0,
             deleted_time: 0,
+            last_activity: 0,
         }
     }
 }
